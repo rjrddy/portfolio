@@ -47,7 +47,7 @@ window.addEventListener('resize', ()=>{
 
 // As the user scrolls, the active link should change based on the section currently displayed on the screen.
 window.addEventListener('scroll', ()=>{
-  const sections = document.querySelectorAll('#heroHeader, #services, #works, #contact');
+  const sections = document.querySelectorAll('#heroHeader, #aboutme, #projects, #contact');
 
   // Loop through sections and check if they are visible
   sections.forEach((section) => {
@@ -94,34 +94,34 @@ NAV_LINKS.forEach(link => {
   })
 })
 
-// Handles the hover animation on services section
-SERVICE_BOXES.forEach(service => {
-  const moveBG = (x, y) => {
-    Object.assign(currentServiceBG.style, {
-      left: x + 'px',
-      top: y + 'px',
-    })
-  }
-  service.addEventListener('mouseenter', (e) => {
-    if (currentServiceBG === null) {
-      currentServiceBG = service.querySelector('.service-card__bg');
-    }
-    moveBG(e.clientX, e.clientY);
-  });
-  service.addEventListener('mousemove', (e) => {
-    const LEFT = e.clientX - service.getBoundingClientRect().left;
-    const TOP = e.clientY - service.getBoundingClientRect().top;
-    moveBG(LEFT, TOP);
-  });
-  service.addEventListener('mouseleave', () => {
-    const IMG_POS = service.querySelector('.service-card__illustration')
-    const LEFT = IMG_POS.offsetLeft + currentServiceBG.getBoundingClientRect().width;
-    const TOP = IMG_POS.offsetTop + currentServiceBG.getBoundingClientRect().height;
+// // Handles the hover animation on services section
+// SERVICE_BOXES.forEach(service => {
+//   const moveBG = (x, y) => {
+//     Object.assign(currentServiceBG.style, {
+//       left: x + 'px',
+//       top: y + 'px',
+//     })
+//   }
+//   service.addEventListener('mouseenter', (e) => {
+//     if (currentServiceBG === null) {
+//       currentServiceBG = service.querySelector('.service-card__bg');
+//     }
+//     moveBG(e.clientX, e.clientY);
+//   });
+//   service.addEventListener('mousemove', (e) => {
+//     const LEFT = e.clientX - service.getBoundingClientRect().left;
+//     const TOP = e.clientY - service.getBoundingClientRect().top;
+//     moveBG(LEFT, TOP);
+//   });
+//   service.addEventListener('mouseleave', () => {
+//     const IMG_POS = service.querySelector('.service-card__illustration')
+//     const LEFT = IMG_POS.offsetLeft + currentServiceBG.getBoundingClientRect().width;
+//     const TOP = IMG_POS.offsetTop + currentServiceBG.getBoundingClientRect().height;
 
-    moveBG(LEFT, TOP);
-    currentServiceBG = null;
-  });
-});
+//     moveBG(LEFT, TOP);
+//     currentServiceBG = null;
+//   });
+// });
 
 // Handles smooth scrolling
 new SweetScroll({
