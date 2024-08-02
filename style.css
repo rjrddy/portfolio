@@ -298,51 +298,23 @@ body {
      gap: 2rem;
      margin-top: 5rem;
  }
- .header__resume {
-     display: inline-flex;
-     border-radius: 7px;
-     text-decoration: none;
-     background-color: #37AE7C;
-     padding: 1.2rem 1.5rem;
-     font-weight: 700;
-     color: white;
-     position: relative;
- }
- .header__resume:hover::before {
-     width: 80%;
-     height: 80%;
- }
-.header__resume:hover {
-      transform: translateY(-3px);
-}
- /* .header__resume::before {
-     content: '';
-     background-color: #00FF94;
-     width: 120%;
-     height: 120%;
-     display: block;
-     position: absolute;
-     transition: all .15s ease-in-out;
-     top: 50%;
-     left: 50%;
-     z-index: -1;
-     filter: blur(30px);
-     transform: translate(-50%, -50%);
- } */
  
+
+
  /* Contact Buttons */
  .contact-button {
      display: inline-flex;
      align-items: center;
      justify-content: center;
-     border-radius: 7px; /* Match the resume button shape */
+     border-radius: 7px;
      text-decoration: none;
      font-weight: 700;
      font-size: 1.4rem;
-     padding: 1.2rem 1.5rem; /* Match the resume button padding */
+     padding: 1.2rem 1.5rem;
      position: relative;
      overflow: hidden;
      transition: background-color 0.3s, transform 0.3s;
+     color: white; /* Ensuring text color consistency */
  }
  
  .contact-button::before {
@@ -369,6 +341,12 @@ body {
      transform: translateY(-3px);
  }
  
+ .header-button {
+     background-color: #00FF94;
+     color: white
+  }
+ 
+
  .email-button {
      background-color: #d44638;
      color: white;
