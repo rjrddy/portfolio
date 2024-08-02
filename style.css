@@ -403,44 +403,58 @@ body {
 
 
 
-/*
- * ==================
- * Works
- * ==================
- */
-.projects{
+.projects {
     margin-top: 10rem;
     display: flex;
     flex-wrap: wrap;
 }
-.work{
+
+.work {
     width: 100%;
     padding: 2%;
 }
-.work__box{
+
+.work__link {
+    display: block;
+    text-decoration: none; /* Remove the underline from the link */
+    color: inherit; /* Inherit color from parent */
+}
+
+.work__box {
     border-radius: 7px;
     padding: 1.5rem;
     background-color: #26222d;
+    transition: transform 0.3s, box-shadow 0.3s; /* Add a transition for hover effects */
 }
-.work__img-box{
+
+.work__link:hover .work__box {
+    transform: translateY(-5px); /* Slightly lift the box on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Add a shadow on hover */
+}
+
+.work__img-box {
     width: 100%;
     display: flex;
     border-radius: 7px;
     overflow: hidden;
 }
-.work__img-box img{
+
+.work__img-box img {
     width: 100%;
 }
-.work__title{
+
+.work__title {
     margin-top: 1rem;
     font-weight: 700;
 }
-.work__badges{
+
+.work__badges {
     display: flex;
     margin-top: 2rem;
     overflow: hidden;
 }
-.work__badge{
+
+.work__badge {
     background-color: #59ffb91c;
     border-radius: 10px;
     font-weight: 700;
