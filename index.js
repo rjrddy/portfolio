@@ -130,21 +130,21 @@ new SweetScroll({
   offset: NAV_BAR.getBoundingClientRect().height - 80
 });
 
-// Handles form validation and submission
-CONTACT_FORM.addEventListener('submit', (e) => {
-  e.preventDefault(); // Prevent default form submission
+// // Handles form validation and submission
+// CONTACT_FORM.addEventListener('submit', (e) => {
+//   e.preventDefault(); // Prevent default form submission
 
-  const name = document.getElementById('contactNameTxt').value.trim();
-  const message = document.getElementById('contactDescriptionTxt').value.trim();
+//   const name = document.getElementById('contactNameTxt').value.trim();
+//   const message = document.getElementById('contactDescriptionTxt').value.trim();
 
-  if (name === '' || message === '') {
-    alert('Please fill out all fields.');
-    return;
-  }
+//   if (name === '' || message === '') {
+//     alert('Please fill out all fields.');
+//     return;
+//   }
 
-  // Handle form submission (e.g., send email or store data)
-  alert('Thank you for your message! We will get back to you soon.');
+//   // Handle form submission (e.g., send email or store data)
+//   alert('Thank you for your message! We will get back to you soon.');
 
-  // Optionally, you can reset the form
-  CONTACT_FORM.reset();
-});
+//   // Optionally, you can reset the form
+//   CONTACT_FORM.reset();
+// });
