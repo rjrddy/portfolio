@@ -451,7 +451,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1500px) {
     .service-cards {
         grid-template-columns: 1fr;
     }
