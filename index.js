@@ -1,150 +1,201 @@
-const NAV_BAR = document.getElementById('navBar');
-const NAV_LIST = document.getElementById('navList');
-const HERO_HEADER = document.getElementById('heroHeader');
-const HAMBURGER_BTN = document.getElementById('hamburgerBtn');
-const NAV_LINKS = Array.from( document.querySelectorAll('.nav__list-link'));
-const SERVICE_BOXES = document.querySelectorAll('.service-card__box');
-const ACTIVE_LINK_CLASS = 'active';
-const BREAKPOINT = 576;
+// ================================
+// DOM References
+// ================================
+const NAV_BAR      = document.getElementById('navBar');
+const NAV_LIST     = document.getElementById('navList');
+const HERO_HEADER  = document.getElementById('heroHeader');
+const HAMBURGER    = document.getElementById('hamburgerBtn');
+const NAV_LINKS    = Array.from(document.querySelectorAll('.nav__link'));
+const BREAKPOINT   = 576;
 
-let currentServiceBG = null;
-let currentActiveLink = document.querySelector('.nav__list-link.active');
+let currentActive = document.querySelector('.nav__link.active');
 
-// Remove the active state once the breakpoint is reached
-const resetActiveState = ()=>{
-  NAV_LIST.classList.remove('nav--active');
-  Object.assign(NAV_LIST.style, {
-    height: null
-  });
-  Object.assign(document.body.style, {
-    overflowY: null
-  });
+// ================================
+// Navbar — padding offset
+// ================================
+function setHeroPadding() {
+    if (NAV_LIST.classList.contains('nav--active')) return;
+    const h = NAV_BAR.getBoundingClientRect().height;
+    HERO_HEADER.style.paddingTop = (h / 10) + 'rem';
 }
+setHeroPadding();
 
-//Add padding to the header to make it visible because navbar has a fixed position.
-const addPaddingToHeroHeaderFn = () => {
-  const NAV_BAR_HEIGHT = NAV_BAR.getBoundingClientRect().height;
-  const HEIGHT_IN_REM = NAV_BAR_HEIGHT / 10;
-
-  // If hamburger button is active, do not add padding
-  if (NAV_LIST.classList.contains('nav--active')) {
-    return;
-  }
-  Object.assign(HERO_HEADER.style, {
-    paddingTop: HEIGHT_IN_REM + 'rem'
-  });
-}
-addPaddingToHeroHeaderFn();
-window.addEventListener('resize', ()=>{
-  addPaddingToHeroHeaderFn();
-
-  // When the navbar is active and the window is being resized, remove the active state once the breakpoint is reached
-  if(window.innerWidth >= BREAKPOINT){
-    addPaddingToHeroHeaderFn();
-    resetActiveState();
-  }
+window.addEventListener('resize', () => {
+    setHeroPadding();
+    if (window.innerWidth >= BREAKPOINT) resetMobileNav();
 });
 
-// As the user scrolls, the active link should change based on the section currently displayed on the screen.
-window.addEventListener('scroll', ()=>{
-  const sections = document.querySelectorAll('#heroHeader, #aboutme, #projects, #contact');
+// ================================
+// Navbar — active link on scroll
+// ================================
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('#heroHeader, #aboutme, #experience, #projects');
+    const navH = NAV_BAR.getBoundingClientRect().height;
 
-  // Loop through sections and check if they are visible
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop;
-    const NAV_BAR_HEIGHT = NAV_BAR.getBoundingClientRect().height;
-    if (window.scrollY >= sectionTop - NAV_BAR_HEIGHT) {
-      const ID = section.getAttribute('id');
-      const LINK = NAV_LINKS.filter(link => {
-        return link.href.includes('#'+ID);
-      })[0];
-      console.log(LINK);
-      currentActiveLink.classList.remove(ACTIVE_LINK_CLASS);
-      LINK.classList.add(ACTIVE_LINK_CLASS);
-      currentActiveLink = LINK;
+    sections.forEach(section => {
+        if (window.scrollY >= section.offsetTop - navH - 10) {
+            const id   = section.getAttribute('id');
+            const link = NAV_LINKS.find(l => l.getAttribute('href') === '#' + id);
+            if (link && link !== currentActive) {
+                currentActive.classList.remove('active');
+                link.classList.add('active');
+                currentActive = link;
+            }
+        }
+    });
+});
+
+// ================================
+// Navbar — mobile hamburger
+// ================================
+function resetMobileNav() {
+    NAV_LIST.classList.remove('nav--active');
+    NAV_LIST.style.height = null;
+    document.body.style.overflowY = null;
+}
+
+HAMBURGER.addEventListener('click', () => {
+    const isOpen = NAV_LIST.classList.toggle('nav--active');
+    if (isOpen) {
+        NAV_LIST.style.height = '100vh';
+        document.body.style.overflowY = 'hidden';
+    } else {
+        NAV_LIST.style.height = '0';
+        document.body.style.overflowY = null;
     }
-  });
 });
 
-// Shows & hide navbar on smaller screen
-HAMBURGER_BTN.addEventListener('click', ()=>{
-  NAV_LIST.classList.toggle('nav--active');
-  if (NAV_LIST.classList.contains('nav--active')) {
-    Object.assign(document.body.style, {
-      overflowY: 'hidden'
-    });
-    Object.assign(NAV_LIST.style, {
-      height: '100vh'
-    });
-    return;
-  }
-  Object.assign(NAV_LIST.style, {
-    height: 0
-  });
-  Object.assign(document.body.style, {
-    overflowY: null
-  });
-});
-
-// When navbar link is clicked, reset the active state
 NAV_LINKS.forEach(link => {
-  link.addEventListener('click', ()=>{
-    resetActiveState();
-    link.blur();
-  })
-})
-
-// // Handles the hover animation on services section
-// SERVICE_BOXES.forEach(service => {
-//   const moveBG = (x, y) => {
-//     Object.assign(currentServiceBG.style, {
-//       left: x + 'px',
-//       top: y + 'px',
-//     })
-//   }
-//   service.addEventListener('mouseenter', (e) => {
-//     if (currentServiceBG === null) {
-//       currentServiceBG = service.querySelector('.service-card__bg');
-//     }
-//     moveBG(e.clientX, e.clientY);
-//   });
-//   service.addEventListener('mousemove', (e) => {
-//     const LEFT = e.clientX - service.getBoundingClientRect().left;
-//     const TOP = e.clientY - service.getBoundingClientRect().top;
-//     moveBG(LEFT, TOP);
-//   });
-//   service.addEventListener('mouseleave', () => {
-//     const IMG_POS = service.querySelector('.service-card__illustration')
-//     const LEFT = IMG_POS.offsetLeft + currentServiceBG.getBoundingClientRect().width;
-//     const TOP = IMG_POS.offsetTop + currentServiceBG.getBoundingClientRect().height;
-
-//     moveBG(LEFT, TOP);
-//     currentServiceBG = null;
-//   });
-// });
-
-// Handles smooth scrolling
-new SweetScroll({
-  trigger: '.nav__list-link',
-  easing: 'easeOutQuint',
-  offset: NAV_BAR.getBoundingClientRect().height - 80
+    link.addEventListener('click', () => {
+        resetMobileNav();
+        link.blur();
+    });
 });
 
-// // Handles form validation and submission
-// CONTACT_FORM.addEventListener('submit', (e) => {
-//   e.preventDefault(); // Prevent default form submission
+// ================================
+// Smooth scroll
+// ================================
+new SweetScroll({
+    trigger: '.nav__link',
+    easing: 'easeOutQuint',
+    offset: NAV_BAR.getBoundingClientRect().height - 80
+});
 
-//   const name = document.getElementById('contactNameTxt').value.trim();
-//   const message = document.getElementById('contactDescriptionTxt').value.trim();
+// ================================
+// Neural Network Canvas
+// ================================
+(function initNeuralCanvas() {
+    const canvas = document.getElementById('neural-bg');
+    const ctx    = canvas.getContext('2d');
+    let particles = [];
 
-//   if (name === '' || message === '') {
-//     alert('Please fill out all fields.');
-//     return;
-//   }
+    const COUNT   = 75;
+    const DIST    = 160;
+    const COLORS  = ['99,102,241', '168,85,247', '6,182,212'];
 
-//   // Handle form submission (e.g., send email or store data)
-//   alert('Thank you for your message! We will get back to you soon.');
+    function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
 
-//   // Optionally, you can reset the form
-//   CONTACT_FORM.reset();
-// });
+    class Particle {
+        constructor() {
+            this.reset(true);
+        }
+        reset(initial) {
+            this.x     = Math.random() * canvas.width;
+            this.y     = initial ? Math.random() * canvas.height : (Math.random() < 0.5 ? -5 : canvas.height + 5);
+            this.vx    = (Math.random() - 0.5) * 0.45;
+            this.vy    = (Math.random() - 0.5) * 0.45;
+            this.r     = Math.random() * 1.5 + 0.5;
+            this.alpha = Math.random() * 0.45 + 0.2;
+            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < -10 || this.x > canvas.width  + 10) this.vx *= -1;
+            if (this.y < -10 || this.y > canvas.height + 10) this.vy *= -1;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        particles = Array.from({ length: COUNT }, () => new Particle());
+    }
+
+    function frame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx   = particles[i].x - particles[j].x;
+                const dy   = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < DIST) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(99,102,241,${(1 - dist / DIST) * 0.22})`;
+                    ctx.lineWidth   = 0.6;
+                    ctx.stroke();
+                }
+            }
+            particles[i].update();
+            particles[i].draw();
+        }
+        requestAnimationFrame(frame);
+    }
+
+    resize();
+    init();
+    frame();
+    window.addEventListener('resize', () => { resize(); init(); });
+})();
+
+// ================================
+// Typewriter Effect
+// ================================
+(function initTypewriter() {
+    const el = document.getElementById('typewriter');
+    if (!el) return;
+
+    const roles = ['Software Engineer', 'ML Engineer', 'Full Stack Developer', 'Systems Engineer'];
+    let rIdx = 0, cIdx = 0, deleting = false;
+
+    function tick() {
+        const word = roles[rIdx];
+        if (deleting) {
+            el.textContent = word.substring(0, --cIdx);
+            if (cIdx === 0) {
+                deleting = false;
+                rIdx = (rIdx + 1) % roles.length;
+                return setTimeout(tick, 400);
+            }
+        } else {
+            el.textContent = word.substring(0, ++cIdx);
+            if (cIdx === word.length) {
+                deleting = true;
+                return setTimeout(tick, 2400);
+            }
+        }
+        setTimeout(tick, deleting ? 42 : 80);
+    }
+    setTimeout(tick, 900);
+})();
+
+// ================================
+// Scroll Reveal
+// ================================
+(function initScrollReveal() {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();

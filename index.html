@@ -1,268 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,100&display=swap"
-          rel="stylesheet">
-
-    <!-- JavaScript Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/sweet-scroll/sweet-scroll.min.js"></script>
-
-    <!-- CSS & JS -->
     <link rel="stylesheet" href="./style.css"/>
     <script src="./index.js" defer></script>
-
-    <title> Raj Reddy</title>
-
-    <!-- Icons -->
+    <title>Raj Reddy</title>
     <link rel="icon" type="image/png" sizes="15x15" href="./assets/icons/icons8-r-key-25.png">
     <link rel="icon" type="image/png" sizes="15x15" href="./assets/icons/icons8-r-key-15.png">
     <link rel="icon" type="image/png" sizes="48x48" href="./assets/icons/icons8-r-key-50.png">
     <link rel="icon" type="image/png" sizes="96x96" href="./assets/icons/icons8-r-key-100.png">
-    
 </head>
 <body>
+
+<canvas id="neural-bg"></canvas>
+
 <main>
-    <!-- Hero Header -->
-    <header id="heroHeader" class="hero-header">
+    <!-- Hero -->
+    <header id="heroHeader" class="hero">
         <nav id="navBar" class="nav">
-            <div class="container">
-                <button type="button" id="hamburgerBtn" class="nav__hamburger-btn">
-                    <span class="nav__hamburger-top"></span>
-                    <span class="nav__hamburger-center"></span>
-                    <span class="nav__hamburger-bottom"></span>
+            <div class="container nav__inner">
+                <button type="button" id="hamburgerBtn" class="nav__hamburger">
+                    <span></span><span></span><span></span>
                 </button>
                 <ul id="navList" class="nav__list">
-                    <li class="nav__list-item">
-                        <a class="nav__list-link active" href="#heroHeader">&lt;Home &sol;&gt;</a>
-                    </li>
-                    <li class="nav__list-item">
-                        <a class="nav__list-link" href="#aboutme">&lt;About Me &sol;&gt;</a>
-                    </li>
-                    <li class="nav__list-item">
-                        <a class="nav__list-link" href="#projects">&lt;Projects &sol;&gt;</a>
-                    </li>
+                    <li><a class="nav__link active" href="#heroHeader">&lt;Home /&gt;</a></li>
+                    <li><a class="nav__link" href="#aboutme">&lt;About /&gt;</a></li>
+                    <li><a class="nav__link" href="#experience">&lt;Experience /&gt;</a></li>
+                    <li><a class="nav__link" href="#projects">&lt;Projects /&gt;</a></li>
                 </ul>
             </div>
         </nav>
-        <section class="header__container container">
-            <div class="header__left">
-                <span class="header__sup-text">Hello World! My name is</span>
-                <h1 class="header__title">
-                    <span class="header__title-1" data-role="RAJ">Raj</span>
-                    <span class="header__title-2" data-role="REDDY">Reddy</span>
-                </h1>
-                <p class="header__msg">As a software engineer, I thrive on bringing my ideas to life through code. 
-                    Whether it's crafting sleek websites or building innovative apps, I love turning complex problems into unique, user-friendly solutions.</p>
-                <div class="header__actions">
-                    <a href="./assets/works/Raj_Reddy_Resume.pdf" class="contact-button header-button" download="Raj_Reddy_Resume.pdf">Resume</a>
-                    <a href="mailto:rajreddy23@outlook.com" class="contact-button email-button">Email</a>
-                    <a href="https://www.linkedin.com/in/raj-reddy1" class="contact-button linkedin-button" target="_blank">LinkedIn</a>
-                    <a href="https://github.com/rjrddy" class="contact-button github-button" target="_blank">GitHub</a>
-                </div>
+
+        <div class="hero__body container">
+            <p class="hero__greeting">// Hello World! My name is</p>
+            <h1 class="hero__name">
+                <span data-text="RAJ">Raj</span>
+                <span data-text="REDDY">Reddy</span>
+            </h1>
+            <p class="hero__role"><span id="typewriter"></span><span class="cursor">_</span></p>
+            <p class="hero__bio">Software engineer with experience in embedded systems, machine learning infrastructure, and full-stack development. I thrive on solving complex problems — from signal processing pipelines to interactive web applications.</p>
+            <div class="hero__actions">
+                <a href="./assets/works/Raj_Reddy_Resume.pdf" class="btn btn--primary" download="Raj_Reddy_Resume.pdf">Resume</a>
+                <a href="mailto:rajreddy23@outlook.com" class="btn btn--ghost">Email</a>
+                <a href="https://www.linkedin.com/in/raj-reddy-1" class="btn btn--ghost" target="_blank">LinkedIn</a>
+                <a href="https://github.com/rjrddy" class="btn btn--ghost" target="_blank">GitHub</a>
             </div>
-            <div class="header__right">
-                <img src="./assets/illustrations/header.svg" alt="Header section illustration"/>
-            </div>
-        </section>
-        
-        
-        <span class="header__bg"></span>
+        </div>
+
+        <div class="hero__orb hero__orb--1"></div>
+        <div class="hero__orb hero__orb--2"></div>
     </header>
 
     <!-- About Me -->
-    <section id="aboutme" class="section container">
+    <section id="aboutme" class="section container reveal">
+        <div class="section__eyebrow">01 &mdash; About</div>
         <h2 class="section__title">About Me</h2>
-    
-        <div class="service-cards">
-            <article class="service-card__box">
-                <h3 class="service-card__title">Info</h3>
-                <p class="service-card__msg">
-                    I am a senior majoring in Computer Science at the University of Utah with an expected graduation date of May 2025.
+        <div class="about-grid">
+            <article class="card about-info">
+                <h3 class="card__label">Info</h3>
+                <p class="card__text">
+                    I'm a software engineer at L3Harris Technologies, working on embedded signal processing systems and data infrastructure. I graduated from the University of Utah in May 2025 with a B.S. in Computer Science.
                 </p>
                 <br>
-                <p class="service-card__msg">
-                    I am passionate about solving problems, whether they arise from academic challenges, software development projects, or real-world scenarios. Computer science has significantly elevated my problem-solving skills by providing me with a robust toolkit of algorithms, data structures, and programming paradigms that I can apply to diverse problems. 
-                    Beyond these technical skills, I enjoy bridging Computer Science with other subjects that I am passionate about such as music, astronomy, literature, and sports. My primary interests in computer science include advanced algorithms, computer vision, artificial intelligence, and machine learning.
+                <p class="card__text">
+                    My interests span embedded systems, machine learning, and full-stack development. I enjoy building things that solve real problems — whether that's optimizing signal processing pipelines, training transformer models, or crafting interactive web applications.
                 </p>
                 <br>
-                <p class="service-card__msg">
-                    In my free time, I enjoy reading, playing soccer, and practing guitar!
-                </p>
-                
-                <span class="service-card__bg"></span>
+                <p class="card__text">Outside of work, I enjoy reading, playing soccer, and practicing guitar.</p>
             </article>
-            <article class="service-card__box">
-                <h3 class="service-card__title">Education</h3>
-                <p class="service-card__msg"><span class="label">School:</span> University of Utah</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Location:</span> Salt Lake City, UT</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Degree:</span> B.S. in Computer Science</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Minor:</span> Physics</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Graduation:</span> May 2025</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Relevant Coursework:</span> Algorithms, Software Practice I & II, Database Systems, Computer Networking, Computer Organization, Object-Oriented Programming,
-                Intro to Data Structures and Algorithms, Foundations of Data Analysis, Computer Systems, Image Processing Basics, and Computer Vision.</p>
-                <br>
-                <p class="service-card__msg"><span class="label">Activities:</span> Technical Coding Club, Society of Hispanic Engineers (SHPE), and Software Development Club.</p>
-                <span class="service-card__bg"></span>
-            </article>            
-            <article class="service-card__box">
-                <h3 class="service-card__title">Skills</h3>
-                <p class="service-card__msg"><span class="label">Programming:</span> 
-                    <span class="service__badges">
-                    <span class="service__badge">Python</span>
-                    <span class="service__badge">Java</span>
-                    <span class="service__badge">C#</span>
-                    <span class="service__badge">C</span>
-                    <span class="service__badge">C++</span>
-                    <span class="service__badge">HTML</span>
-                    <span class="service__badge">CSS</span>
-                    <span class="service__badge">JavaScript</span>
-                    <span class="service__badge">SQL</span></p>
-                <br>
-                 <p class="service-card__msg"><span class="label">Development:</span> 
-                    <span class="service__badges">
-                    <span class="service__badge">.NET</span>
-                    <span class="service__badge">MAUI</span>
-                    <span class="service__badge">React</span>
-                    <span class="service__badge">Django</span>
-                    <span class="service__badge">Node.js</span>
-                    <span class="service__badge">MSTest</span>
-                    <span class="service__badge">Linux/Unix</span>
-                    <span class="service__badge">Azure</span>
-                    <span class="service__badge">Docker</span>
-                    <span class="service__badge">Git</span>
-                <br>
-                <p class="service-card__msg"><span class="label">Development:</span> 
-                    <span class="service__badges">
-                    <span class="service__badge">MySQL</span>
-                    <span class="service__badge">LINQ</span>
-                <span class="service-card__bg"></span>
+            <article class="card">
+                <h3 class="card__label">Education</h3>
+                <div class="detail-row"><span class="detail-key">School</span><span class="detail-val">University of Utah</span></div>
+                <div class="detail-row"><span class="detail-key">Location</span><span class="detail-val">Salt Lake City, UT</span></div>
+                <div class="detail-row"><span class="detail-key">Degree</span><span class="detail-val">B.S. Computer Science</span></div>
+                <div class="detail-row"><span class="detail-key">Graduated</span><span class="detail-val">May 2025</span></div>
+                <div class="detail-stack">
+                    <span class="detail-key">Coursework</span>
+                    <span class="card__text card__text--sm">Computer Systems, Machine Learning, Computer Graphics, Algorithms, Software Practice I &amp; II, Database Systems, Computer Networks, Foundations of Data Analysis, Models of Computation, Linear Algebra</span>
+                </div>
             </article>
-        </div>   
+            <article class="card">
+                <h3 class="card__label">Skills</h3>
+                <p class="detail-key">Languages</p>
+                <div class="badges">
+                    <span class="badge">Python</span>
+                    <span class="badge">Java</span>
+                    <span class="badge">C++</span>
+                    <span class="badge">TypeScript</span>
+                    <span class="badge">C</span>
+                    <span class="badge">SQL</span>
+                </div>
+                <p class="detail-key" style="margin-top:2rem">Software</p>
+                <div class="badges">
+                    <span class="badge">Pandas</span>
+                    <span class="badge">NumPy</span>
+                    <span class="badge">React</span>
+                    <span class="badge">Node.js</span>
+                    <span class="badge">AWS</span>
+                    <span class="badge">Azure</span>
+                    <span class="badge">Docker</span>
+                    <span class="badge">Next.js</span>
+                    <span class="badge">.NET</span>
+                    <span class="badge">REST</span>
+                    <span class="badge">Django</span>
+                    <span class="badge">MongoDB</span>
+                    <span class="badge">Linux</span>
+                </div>
+            </article>
+        </div>
     </section>
-    
 
-    <!-- Sample Works -->
-    <section id="projects" class="section container">
+    <!-- Experience -->
+    <section id="experience" class="section container reveal">
+        <div class="section__eyebrow">02 &mdash; Experience</div>
+        <h2 class="section__title">Experience</h2>
+        <div class="timeline">
+            <article class="timeline__item">
+                <div class="timeline__dot"></div>
+                <div class="card timeline__card">
+                    <div class="job__header">
+                        <div>
+                            <h3 class="job__company">L3Harris Technologies</h3>
+                            <p class="job__role">Associate Software Engineer</p>
+                        </div>
+                        <div class="job__meta">
+                            <span>Greenville, TX</span>
+                            <span>June 2025 – Present</span>
+                        </div>
+                    </div>
+                    <ul class="job__bullets">
+                        <li>Developed signal processing modules in Python and C++ on embedded systems, collaborating with hardware teams to optimize performance and resource utilization.</li>
+                        <li>Built microservices for high-frequency data ingestion, processing, and storage, leveraging Podman and serverless functions.</li>
+                        <li>Automated CI/CD testing with pipelines, integrating static code analysis, and integration testing.</li>
+                    </ul>
+                </div>
+            </article>
+            <article class="timeline__item">
+                <div class="timeline__dot"></div>
+                <div class="card timeline__card">
+                    <div class="job__header">
+                        <div>
+                            <h3 class="job__company">Doxy.me</h3>
+                            <p class="job__role">Software Engineering Research Associate</p>
+                        </div>
+                        <div class="job__meta">
+                            <span>Charleston, SC</span>
+                            <span>August 2024 – May 2025</span>
+                        </div>
+                    </div>
+                    <ul class="job__bullets">
+                        <li>Built transformer-based models with PyTorch and Llama, integrating WebRTC for real-time video streaming.</li>
+                        <li>Deployed inference pipelines on SageMaker &amp; Fargate, improving diagnostic accuracy with reinforcement learning.</li>
+                    </ul>
+                </div>
+            </article>
+            <article class="timeline__item">
+                <div class="timeline__dot"></div>
+                <div class="card timeline__card">
+                    <div class="job__header">
+                        <div>
+                            <h3 class="job__company">University of Utah</h3>
+                            <p class="job__role">Undergraduate Research Assistant – FuTURES Lab</p>
+                        </div>
+                        <div class="job__meta">
+                            <span>Salt Lake City, UT</span>
+                            <span>May 2024 – June 2025</span>
+                        </div>
+                    </div>
+                    <ul class="job__bullets">
+                        <li>Analyzed and optimized large-scale datasets, enhancing software configuration testing with tools like gcov and CMake, increasing code coverage by 30% on real-world APIs such as Libpng and PyTorch.</li>
+                        <li>Expanded OSS-Fuzz testing coverage, using compile-time options to improve the robustness of full-stack libraries.</li>
+                    </ul>
+                </div>
+            </article>
+            <article class="timeline__item">
+                <div class="timeline__dot"></div>
+                <div class="card timeline__card">
+                    <div class="job__header">
+                        <div>
+                            <h3 class="job__company">HEXstream</h3>
+                            <p class="job__role">Software Engineering Intern</p>
+                        </div>
+                        <div class="job__meta">
+                            <span>Chicago, IL</span>
+                            <span>May 2022 – August 2022</span>
+                        </div>
+                    </div>
+                    <ul class="job__bullets">
+                        <li>Engineered backend ETL pipelines integrating data from 25+ enterprise sources into Azure SQL and Azure Data Lake.</li>
+                        <li>Developed automated workflows for ingestion, cleansing, and aggregation, supporting distributed analytics systems.</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section container reveal">
+        <div class="section__eyebrow">03 &mdash; Projects</div>
         <h2 class="section__title">Projects</h2>
-        <div class="projects">
-            <article class="work">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/login_page.jpg" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">LMS Application</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">SQL</span>
-                    <span class="work__badge">C#</span>
-                    <span class="work__badge">LINQ</span>
-                </span>
+        <div class="projects-grid">
+            <article class="card project">
+                <div class="project__index">01</div>
+                <h3 class="project__title">Course Planning &amp; Review Platform</h3>
+                <p class="project__desc">Multi-service data platform for student schedule matching, course overlap detection, and behavioral insights. ETL pipelines process thousands of course records with interactive dashboards and calendar visualizations. Won class best project.</p>
+                <div class="badges">
+                    <span class="badge">Python</span>
+                    <span class="badge">React</span>
+                    <span class="badge">Tailwind</span>
+                    <span class="badge">ETL</span>
                 </div>
             </article>
-            <article class="work">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/snake.png" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">Snake Game: Client & Server</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">C#</span>
-                    <span class="work__badge">.NET</span>
-                    <span class="work__badge">MAUI</span>
-                </span>
+            <article class="card project">
+                <div class="project__index">02</div>
+                <h3 class="project__title">Accountability Tracker</h3>
+                <p class="project__desc">Full stack app for managing daily goals and recurring tasks. Features Firebase Auth, localStorage guest support, and PostgreSQL with Prisma for persistent data. Includes progress visualizations and social features.</p>
+                <div class="badges">
+                    <span class="badge">Next.js</span>
+                    <span class="badge">TypeScript</span>
+                    <span class="badge">Firebase</span>
+                    <span class="badge">PostgreSQL</span>
+                    <span class="badge">Prisma</span>
                 </div>
             </article>
-            <article class="work">
-                <a href="https://github.com/AhmedZ70/SpriteEditor" class="work__link" target="_blank">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/sprite_editor.png" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">Bitwise: A Circuit Learning App</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">C++</span>
-                    <span class="work__badge">Qt</span>
-                </span>
+            <article class="card project">
+                <div class="project__index">03</div>
+                <h3 class="project__title">Ray Tracing Engine</h3>
+                <p class="project__desc">Interactive WebGL-based ray tracing engine with realistic reflections, dynamic lighting, and customizable environment maps. Implemented shaders and user controls for rendering techniques and scene adjustments.</p>
+                <div class="badges">
+                    <span class="badge">JavaScript</span>
+                    <span class="badge">WebGL</span>
+                    <span class="badge">GLSL</span>
                 </div>
-                </a>
-            </article>
-            <article class="work">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/spreadsheet.png" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">Spreadsheet Application</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">C#</span>
-                    <span class="work__badge">.NET</span>
-                    <span class="work__badge">MAUI</span>
-                </span>
-                </div>
-            </article>
-            <article class="work">
-                <a href="https://github.com/rjrddy/Flappy-Bird" class="work__link" target="_blank">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/flappy_bird.jpg" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">Flappy Bird</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">Python</span>
-                    <span class="work__badge">PyGame</span>
-                </span>
-                </div>
-                </a>
-            </article>
-            <article class="work">
-                <a href="https://github.com/rjrddy/To-Do-List" class="work__link" target="_blank">
-                <div class="work__box">
-                    <span class="work__img-box">
-                    <img src="./assets/works/to-do_website.png" alt="My Work 1"/>
-                </span>
-                    <h3 class="work__title">To-Do List Website</h3>
-                    <span class="work__badges">
-                    <span class="work__badge">HTML</span>
-                    <span class="work__badge">CSS</span>
-                    <span class="work__badge">JavaScript</span>
-                </span>
-                </div>
-                </a>
             </article>
         </div>
     </section>
-
-
-    <!-- Contact
-    <section id="contact" class="section container">
-        <h2 class="section__title">Let's Connect!</h2>
-        <div class="contact">
-            <form class="contact__form">
-                <div class="contact__field-wrapper">
-                    <label for="contactNameTxt">Name:</label>
-                    <input id="contactNameTxt" type="text" placeholder="What's your name?"/>
-                </div>
-                <div class="contact__field-wrapper">
-                    <label for="contactDescriptionTxt">Message:</label>
-                    <textarea id="contactDescriptionTxt" placeholder="Let's connect!"></textarea>
-                </div>
-                <button type="submit" class="contact__submit-btn">Submit</button>
-            </form>
-            <div class="contact-buttons">
-                <a href="mailto:rajreddy23@outlook.com" class="contact-button email-button">Email</a>
-                <a href="https://www.linkedin.com/in/raj-reddy1" class="contact-button linkedin-button" target="_blank">LinkedIn</a>
-                <a href="https://github.com/rjrddy" class="contact-button github-button" target="_blank">GitHub</a>
-            </div>
-        </div>
-    </section>
-     -->
-   
 </main>
 </body>
 </html>
