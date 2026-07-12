@@ -555,36 +555,100 @@ button { font: inherit; color: inherit; }
 .card-link:hover { transform: translateY(-4px); }
 
 .card--project {
-    padding: 1.4rem 1.4rem 2rem;
+    padding: 2.8rem;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.card--project .card__img {
-    border-radius: 14px;
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-    margin-bottom: 1.8rem;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.card--project .card__img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 500ms ease;
-}
-
-.card-link:hover .card--project .card__img img {
-    transform: scale(1.03);
-}
-
-.card--project__meta {
-    padding: 0 1rem;
+.card--project__index {
+    font-family: var(--font-display), "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-size: 3.2rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 1.6rem;
+    opacity: 0.75;
 }
 
 .card--project .card__title {
-    font-size: 1.7rem;
+    font-size: 1.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.card--project .card__body {
+    margin-top: 0.4rem;
+    flex: 1;
+}
+
+/* ============================================================
+ * Experience timeline
+ * ============================================================ */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    margin-top: 2rem;
+}
+
+.timeline__item {
+    padding: 2.8rem;
+}
+
+.timeline__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.4rem;
+}
+
+.timeline__role {
+    font-size: 1.4rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 0.2rem;
+    letter-spacing: 0.005em;
+}
+
+.timeline__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    gap: 0.2rem;
+    letter-spacing: 0.02em;
+    text-align: right;
+}
+
+.timeline__bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 0.4rem;
+    padding-left: 1.4rem;
+}
+
+.timeline__bullets li {
+    list-style: disc;
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.timeline__bullets li::marker {
+    color: var(--accent);
+}
+
+@media (max-width: 640px) {
+    .timeline__meta {
+        align-items: flex-start;
+        text-align: left;
+    }
+    .timeline__item { padding: 2rem; }
 }
 
 /* ============================================================

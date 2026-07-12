@@ -19,40 +19,85 @@ const NAV_ITEMS = [
 const SKILL_GROUPS: { title: string; items: string[] }[] = [
   {
     title: "Languages",
+    items: ["Python", "Java", "C++", "TypeScript", "C", "SQL"],
+  },
+  {
+    title: "Software",
     items: [
-      "Python",
-      "Java",
-      "C#",
-      "C",
-      "C++",
-      "JavaScript",
-      "TypeScript",
-      "HTML",
-      "CSS",
-      "SQL",
+      "Pandas",
+      "NumPy",
+      "React",
+      "Node.js",
+      "AWS",
+      "Azure",
+      "Docker",
+      "Next.js",
+      ".NET",
+      "REST",
+      "Django",
+      "MongoDB",
+      "Linux",
     ],
-  },
-  {
-    title: "Frameworks & Runtimes",
-    items: ["React", "Next.js", "Node.js", "Django", ".NET", "MAUI", "Qt", "MSTest"],
-  },
-  {
-    title: "Tools & Platforms",
-    items: ["Git", "Docker", "Linux / Unix", "Azure", "VS Code"],
-  },
-  {
-    title: "Data",
-    items: ["MySQL", "SQL", "LINQ"],
   },
   {
     title: "Interests",
     items: [
-      "Algorithms",
+      "Embedded Systems",
+      "Machine Learning",
       "Computer Vision",
-      "AI / ML",
       "Photography",
       "Music",
       "Astronomy",
+    ],
+  },
+];
+
+const EXPERIENCE: {
+  company: string;
+  role: string;
+  location: string;
+  dates: string;
+  bullets: string[];
+}[] = [
+  {
+    company: "L3Harris Technologies",
+    role: "Associate Software Engineer",
+    location: "Dallas, TX",
+    dates: "June 2025 – Present",
+    bullets: [
+      "Developed signal processing modules in Python and C++ on embedded systems, collaborating with hardware teams to optimize performance and resource utilization.",
+      "Built microservices for high-frequency data ingestion, processing, and storage, leveraging Podman and serverless functions.",
+      "Automated CI/CD testing with pipelines, integrating static code analysis and integration testing.",
+    ],
+  },
+  {
+    company: "Doxy.me",
+    role: "Software Engineering Research Associate",
+    location: "Charleston, SC",
+    dates: "August 2024 – May 2025",
+    bullets: [
+      "Built transformer-based models with PyTorch and Llama, integrating WebRTC for real-time video streaming.",
+      "Deployed inference pipelines on SageMaker & Fargate, improving diagnostic accuracy with reinforcement learning.",
+    ],
+  },
+  {
+    company: "University of Utah",
+    role: "Undergraduate Research Assistant — FuTURES Lab",
+    location: "Salt Lake City, UT",
+    dates: "May 2024 – June 2025",
+    bullets: [
+      "Analyzed and optimized large-scale datasets, enhancing software configuration testing with tools like gcov and CMake, increasing code coverage by 30% on real-world APIs such as Libpng and PyTorch.",
+      "Expanded OSS-Fuzz testing coverage, using compile-time options to improve the robustness of full-stack libraries.",
+    ],
+  },
+  {
+    company: "HEXstream",
+    role: "Software Engineering Intern",
+    location: "Chicago, IL",
+    dates: "May 2022 – August 2022",
+    bullets: [
+      "Engineered backend ETL pipelines integrating data from 25+ enterprise sources into Azure SQL and Azure Data Lake.",
+      "Developed automated workflows for ingestion, cleansing, and aggregation, supporting distributed analytics systems.",
     ],
   },
 ];
@@ -73,45 +118,30 @@ const PHOTOS: string[] = [
 
 const PROJECTS: {
   title: string;
-  img: string;
+  description: string;
   tags: string[];
   link: string | null;
 }[] = [
   {
-    title: "LMS Application",
-    img: "/assets/works/login_page.jpg",
-    tags: ["SQL", "C#", "LINQ"],
+    title: "Course Planning & Review Platform",
+    description:
+      "Multi-service data platform for student schedule matching, course overlap detection, and behavioral insights. ETL pipelines process thousands of course records with interactive dashboards and calendar visualizations. Won class best project.",
+    tags: ["Python", "React", "Tailwind", "ETL"],
     link: null,
   },
   {
-    title: "Snake Game: Client & Server",
-    img: "/assets/works/snake.png",
-    tags: ["C#", ".NET", "MAUI"],
+    title: "Accountability Tracker",
+    description:
+      "Full-stack app for managing daily goals and recurring tasks. Features Firebase Auth, localStorage guest support, and PostgreSQL with Prisma for persistent data. Includes progress visualizations and social features.",
+    tags: ["Next.js", "TypeScript", "Firebase", "PostgreSQL", "Prisma"],
     link: null,
   },
   {
-    title: "Bitwise: A Circuit Learning App",
-    img: "/assets/works/sprite_editor.png",
-    tags: ["C++", "Qt"],
-    link: "https://github.com/AhmedZ70/SpriteEditor",
-  },
-  {
-    title: "Spreadsheet Application",
-    img: "/assets/works/spreadsheet.png",
-    tags: ["C#", ".NET", "MAUI"],
+    title: "Ray Tracing Engine",
+    description:
+      "Interactive WebGL-based ray tracing engine with realistic reflections, dynamic lighting, and customizable environment maps. Implemented shaders and user controls for rendering techniques and scene adjustments.",
+    tags: ["JavaScript", "WebGL", "GLSL"],
     link: null,
-  },
-  {
-    title: "Flappy Bird",
-    img: "/assets/works/flappy_bird.jpg",
-    tags: ["Python", "PyGame"],
-    link: "https://github.com/rjrddy/Flappy-Bird",
-  },
-  {
-    title: "To-Do List Website",
-    img: "/assets/works/to-do_website.png",
-    tags: ["HTML", "CSS", "JavaScript"],
-    link: "https://github.com/rjrddy/To-Do-List",
   },
 ];
 
@@ -254,16 +284,21 @@ export default function Home() {
             <h2 className="section__title">About</h2>
             <article className="glass card card--wide">
               <p className="card__body card__body--lead">
-                I&apos;m a senior studying Computer Science at the University of
-                Utah with a Physics minor, graduating May 2025. I love turning
-                complex problems into elegant software — from advanced
-                algorithms and computer vision to full-stack applications.
+                I&apos;m a software engineer at L3Harris Technologies, working
+                on embedded signal processing systems and data infrastructure.
+                I graduated from the University of Utah in May 2025 with a
+                B.S. in Computer Science.
               </p>
               <p className="card__body">
-                Outside of code, I chase light with a camera, read, play soccer,
-                and practice guitar. I like sitting at the intersection of
-                things: engineering with music, computer vision with astronomy,
-                systems thinking with storytelling.
+                My interests span embedded systems, machine learning, and
+                full-stack development. I enjoy building things that solve real
+                problems — whether that&apos;s optimizing signal processing
+                pipelines, training transformer models, or crafting interactive
+                web applications.
+              </p>
+              <p className="card__body">
+                Outside of work, I chase light with a camera, read, play soccer,
+                and practice guitar.
               </p>
             </article>
           </div>
@@ -272,25 +307,44 @@ export default function Home() {
         <section id="experience" className="section">
           <div className="section__container">
             <h2 className="section__title">Experience</h2>
-            <div className="card-grid">
-              <article className="glass card">
-                <span className="card__eyebrow">Education</span>
-                <h3 className="card__title">University of Utah</h3>
-                <p className="card__meta">B.S. Computer Science · Physics Minor</p>
-                <p className="card__meta">Salt Lake City, UT · May 2025</p>
+            <div className="timeline">
+              {EXPERIENCE.map((job) => (
+                <article key={job.company} className="glass card timeline__item">
+                  <div className="timeline__header">
+                    <div>
+                      <h3 className="card__title">{job.company}</h3>
+                      <p className="timeline__role">{job.role}</p>
+                    </div>
+                    <div className="timeline__meta">
+                      <span>{job.location}</span>
+                      <span>{job.dates}</span>
+                    </div>
+                  </div>
+                  <ul className="timeline__bullets">
+                    {job.bullets.map((b) => (
+                      <li key={b}>{b}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+              <article className="glass card timeline__item">
+                <div className="timeline__header">
+                  <div>
+                    <h3 className="card__title">University of Utah</h3>
+                    <p className="timeline__role">
+                      B.S. Computer Science · Graduated May 2025
+                    </p>
+                  </div>
+                  <div className="timeline__meta">
+                    <span>Salt Lake City, UT</span>
+                    <span>Education</span>
+                  </div>
+                </div>
                 <p className="card__body">
-                  Relevant coursework: Algorithms, Software Practice I &amp; II,
-                  Database Systems, Computer Networking, Computer Organization,
-                  Data Structures, Foundations of Data Analysis, Image
-                  Processing, and Computer Vision.
-                </p>
-              </article>
-              <article className="glass card">
-                <span className="card__eyebrow">Community</span>
-                <h3 className="card__title">Clubs &amp; Activities</h3>
-                <p className="card__body">
-                  Technical Coding Club · Society of Hispanic Professional
-                  Engineers (SHPE) · Software Development Club.
+                  Coursework: Computer Systems, Machine Learning, Computer
+                  Graphics, Algorithms, Software Practice I &amp; II, Database
+                  Systems, Computer Networks, Foundations of Data Analysis,
+                  Models of Computation, and Linear Algebra.
                 </p>
               </article>
             </div>
@@ -351,22 +405,20 @@ export default function Home() {
           <div className="section__container">
             <h2 className="section__title">Projects</h2>
             <div className="card-grid card-grid--projects">
-              {PROJECTS.map((project) => {
+              {PROJECTS.map((project, i) => {
                 const inner = (
                   <article className="glass card card--project">
-                    <div className="card__img">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={project.img} alt={project.title} />
+                    <div className="card--project__index">
+                      {String(i + 1).padStart(2, "0")}
                     </div>
-                    <div className="card--project__meta">
-                      <h3 className="card__title">{project.title}</h3>
-                      <div className="badges">
-                        {project.tags.map((tag) => (
-                          <span key={tag} className="badge">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                    <h3 className="card__title">{project.title}</h3>
+                    <p className="card__body">{project.description}</p>
+                    <div className="badges">
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="badge">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
                   </article>
                 );
