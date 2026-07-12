@@ -18,15 +18,22 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Raj Reddy",
+  title: "Raj Reddy — Software Engineer",
   description:
-    "Portfolio of Raj Reddy — software engineer, photographer, and computer science student at the University of Utah.",
+    "Software engineer at L3Harris Technologies working on embedded signal processing and data infrastructure. Also a photographer.",
+  openGraph: {
+    title: "Raj Reddy — Software Engineer",
+    description:
+      "Software engineer at L3Harris Technologies working on embedded signal processing and data infrastructure. Also a photographer.",
+    type: "website",
+    images: ["/photos/_DSF3104.jpg"],
+  },
   icons: {
     icon: [
       { url: "/assets/icons/icons8-r-key-15.png", sizes: "15x15", type: "image/png" },
-      { url: "/assets/icons/icons8-r-key-25.png", sizes: "15x15", type: "image/png" },
-      { url: "/assets/icons/icons8-r-key-50.png", sizes: "48x48", type: "image/png" },
-      { url: "/assets/icons/icons8-r-key-100.png", sizes: "96x96", type: "image/png" },
+      { url: "/assets/icons/icons8-r-key-25.png", sizes: "25x25", type: "image/png" },
+      { url: "/assets/icons/icons8-r-key-50.png", sizes: "50x50", type: "image/png" },
+      { url: "/assets/icons/icons8-r-key-100.png", sizes: "100x100", type: "image/png" },
     ],
   },
 };
