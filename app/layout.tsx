@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description:
       "Software engineer at L3Harris Technologies working on embedded signal processing and data infrastructure. Also a photographer.",
     type: "website",
-    images: ["/photos/_DSF3104.jpg"],
+    images: ["/photos/wallpaper.jpg"],
   },
   icons: {
     icon: [

@@ -201,8 +201,9 @@ export const PROJECTS: Project[] = [
  * Photography — files live in /public/photos/
  * ------------------------------------------------------------------ */
 
-/** The frame used as the fixed page backdrop. */
-export const HERO_PHOTO = "/photos/_DSF3104.jpg";
+/** The fixed page backdrop. Deliberately not in PHOTOS — it's the wallpaper,
+ *  so it shouldn't also scroll past in the carousels. */
+export const HERO_PHOTO = "/photos/wallpaper.jpg";
 
 /**
  * Photos keep their native aspect ratio — never cropped. `width`/`height` are
@@ -213,15 +214,37 @@ export const HERO_PHOTO = "/photos/_DSF3104.jpg";
 export type Photo = { src: string; width: number; height: number; alt?: string };
 
 export const PHOTOS: Photo[] = [
-  { src: "/photos/_DSF3104.jpg", width: 6240, height: 4160 },
-  { src: "/photos/_DSF0608.jpg", width: 1270, height: 2048 },
-  { src: "/photos/_DSF0724.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF1065.jpg", width: 2048, height: 1365 },
-  { src: "/photos/_DSF1450.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF1957.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF2819.jpg", width: 2048, height: 1431 },
-  { src: "/photos/_DSF3154.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF3311.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF3342.jpg", width: 1365, height: 2048 },
-  { src: "/photos/_DSF3424.jpg", width: 2048, height: 1365 },
+  { src: "/photos/0520057_0021.JPG", width: 2128, height: 1501 },
+  { src: "/photos/0520057_0029.JPG", width: 2128, height: 1501 },
+  { src: "/photos/0520240_0012.JPG", width: 2128, height: 1501 },
+  { src: "/photos/0520240_0018.JPG", width: 2128, height: 1501 },
+  { src: "/photos/0520240_0024.JPG", width: 1719, height: 2128 },
+  { src: "/photos/0520240_0034.JPG", width: 2128, height: 1501 },
+  { src: "/photos/_DSF0198.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF0555.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF0721.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF0724.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF0862.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF1450.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF1983.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF2286.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF2308.JPG", width: 1445, height: 2128 },
+  { src: "/photos/_DSF2362.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF2454.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF2583.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF2691.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF2737.jpg", width: 2128, height: 1577 },
+  { src: "/photos/_DSF2819.jpg", width: 2128, height: 1511 },
+  { src: "/photos/_DSF2933.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF3102.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF3116.jpg", width: 1697, height: 2128 },
+  { src: "/photos/_DSF3154.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF3243.jpg", width: 2128, height: 1694 },
+  { src: "/photos/_DSF3274.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF3279.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF3387.jpg", width: 1445, height: 2128 },
+  { src: "/photos/_DSF3424.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF3479.jpg", width: 2128, height: 1445 },
+  { src: "/photos/_DSF3510.jpg", width: 2128, height: 1361 },
+  { src: "/photos/_DSF3576.jpg", width: 2128, height: 1445 },
 ];

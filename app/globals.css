@@ -716,41 +716,86 @@ button {
 
 /* --- Photography ---------------------------------------------------------- */
 
-/* Masonry via columns: every frame keeps its photo's native aspect ratio, so
-   portrait and landscape shots sit side by side uncropped. */
-.gallery {
-    column-count: 3;
-    column-gap: var(--s2);
+/* Two rows scrolling in opposite directions. The row fixes the height and each
+   photo's width follows its own aspect ratio, so nothing is cropped. */
+/* Full-bleed: breaks out of the centred section container so the rows run edge
+   to edge of the viewport. `body` already clips overflow-x, so the 100vw width
+   can't introduce a horizontal scrollbar. */
+.marquees {
+    display: grid;
+    gap: var(--s2);
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
 }
 
-.gallery__cell {
-    /* Stops a frame being split across a column break. */
-    break-inside: avoid;
-    margin-bottom: var(--s2);
+.marquee {
+    overflow: hidden;
 }
 
-.gallery__btn {
+.marquee__track {
+    display: flex;
+    gap: var(--s2);
+    width: max-content;
+    /* Both rows travel the same distance; only the direction differs. */
+    animation: marquee-left 90s linear infinite;
+}
+
+.marquee__track--right {
+    animation-name: marquee-right;
+}
+
+/* Halving the track lands on an identical frame — the seam is invisible. */
+@keyframes marquee-left {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes marquee-right {
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.marquee:hover .marquee__track {
+    animation-play-state: paused;
+}
+
+.marquee__item {
+    flex: none;
+    height: 280px;
+}
+
+/* Square corners — the photo's own edges, uncropped and unrounded. */
+.marquee__btn {
     display: block;
-    width: 100%;
+    height: 100%;
     overflow: hidden;
     border: 1px solid var(--glass-line);
-    border-radius: var(--radius);
     transition: border-color 0.25s ease;
 }
 
 /* Fully opaque — these sit on the bare photograph, so any transparency here
    would let the backdrop bleed through and wash the frame out. */
-.gallery__btn img {
-    width: 100%;
-    height: auto;
+.marquee__btn img {
+    width: auto;
+    height: 100%;
     transition: transform 0.5s var(--ease);
 }
 
-.gallery__btn:hover {
+.marquee__btn:hover {
     border-color: var(--glass-line-hover);
 }
 
-.gallery__btn:hover img {
+.marquee__btn:hover img {
     transform: scale(1.03);
 }
 
@@ -898,8 +943,8 @@ button {
         gap: var(--s3);
     }
 
-    .gallery {
-        column-count: 2;
+    .marquee__item {
+        height: 220px;
     }
 
     .project {
@@ -914,8 +959,8 @@ button {
 }
 
 @media (max-width: 700px) {
-    .gallery {
-        column-count: 1;
+    .marquee__item {
+        height: 180px;
     }
 
     .section {
@@ -1031,5 +1076,16 @@ button {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+
+    /* The blanket rule above would snap the track to its end frame, hiding half
+       the row. Stop it outright and let the rows be swiped by hand instead. */
+    .marquee {
+        overflow-x: auto;
+    }
+
+    .marquee__track {
+        animation: none !important;
+        transform: none !important;
     }
 }

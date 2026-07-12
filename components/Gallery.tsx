@@ -2,7 +2,15 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { PHOTOS } from "@/lib/content";
+import { PHOTOS, type Photo } from "@/lib/content";
+
+/**
+ * Two marquees running against each other. Photos alternate between the rows
+ * so each gets a similar mix of portrait and landscape rather than one row
+ * ending up all-tall and the other all-wide.
+ */
+const ROW_A: Photo[] = PHOTOS.filter((_, i) => i % 2 === 0);
+const ROW_B: Photo[] = PHOTOS.filter((_, i) => i % 2 === 1);
 
 export function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
@@ -22,7 +30,6 @@ export function Gallery() {
     };
 
     document.addEventListener("keydown", onKey);
-    // Preserve the scrollbar's width so the page doesn't jolt sideways.
     const gap = window.innerWidth - document.documentElement.clientWidth;
     const prev = document.body.style.cssText;
     document.body.style.overflow = "hidden";
@@ -36,29 +43,10 @@ export function Gallery() {
 
   return (
     <>
-      <ul className="gallery">
-        {PHOTOS.map((photo, i) => (
-          <li key={photo.src} className="gallery__cell">
-            <button
-              type="button"
-              className="gallery__btn"
-              onClick={() => setOpen(i)}
-              aria-label={`Open photograph ${i + 1} of ${PHOTOS.length}`}
-            >
-              {/* Intrinsic width/height — the frame takes the photo's shape,
-                  rather than the photo being cropped to fit the frame. */}
-              <Image
-                src={photo.src}
-                alt={photo.alt ?? ""}
-                width={photo.width}
-                height={photo.height}
-                sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                quality={78}
-              />
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="marquees">
+        <Marquee photos={ROW_A} direction="right" onOpen={setOpen} />
+        <Marquee photos={ROW_B} direction="left" onOpen={setOpen} />
+      </div>
 
       {open !== null && (
         <div
@@ -113,5 +101,58 @@ export function Gallery() {
         </div>
       )}
     </>
+  );
+}
+
+function Marquee({
+  photos,
+  direction,
+  onOpen,
+}: {
+  photos: Photo[];
+  direction: "left" | "right";
+  onOpen: (i: number) => void;
+}) {
+  // The track holds the row twice. Each copy is exactly 50% of the track, so
+  // translating by half its width lands on an identical frame — that's what
+  // makes the loop seamless rather than snapping back.
+  const track = [...photos, ...photos];
+
+  return (
+    <div className="marquee">
+      <ul className={`marquee__track marquee__track--${direction}`}>
+        {track.map((photo, i) => {
+          const isClone = i >= photos.length;
+          const lightboxIndex = PHOTOS.findIndex((p) => p.src === photo.src);
+
+          return (
+            <li
+              key={`${photo.src}-${i}`}
+              className="marquee__item"
+              aria-hidden={isClone || undefined}
+            >
+              <button
+                type="button"
+                className="marquee__btn"
+                onClick={() => onOpen(lightboxIndex)}
+                tabIndex={isClone ? -1 : undefined}
+                aria-label={`Open photograph ${lightboxIndex + 1} of ${PHOTOS.length}`}
+              >
+                {/* Uncropped: the row fixes the height, width follows the
+                    photo's own aspect ratio. */}
+                <Image
+                  src={photo.src}
+                  alt={photo.alt ?? ""}
+                  width={photo.width}
+                  height={photo.height}
+                  sizes="(max-width: 700px) 60vw, 30vw"
+                  quality={78}
+                />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
