@@ -10,6 +10,7 @@ import {
   EXPERIENCE,
   HERO_PHOTO,
   INTERESTS,
+  LANGUAGES,
   PROJECTS,
   SITE,
   SKILL_GROUPS,
@@ -36,6 +37,21 @@ export default function Home() {
                 <p key={i}>{para}</p>
               ))}
             </div>
+          </div>
+
+          <div className="about-languages">
+            <span className="eyebrow">Languages</span>
+            <ul className="languages">
+              {LANGUAGES.map((lang) => (
+                <li key={lang.name} className="glass panel language">
+                  <h3 className="language__name">{lang.name}</h3>
+                  {lang.native && (
+                    <p className="language__native">{lang.native}</p>
+                  )}
+                  <span className="language__level">{lang.level}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </Section>
 

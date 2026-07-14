@@ -129,6 +129,24 @@ export const SKILL_GROUPS: { title: string; items: TechKey[] }[] = [
   },
 ];
 
+/* ------------------------------------------------------------------ *
+ * Spoken languages
+ * ------------------------------------------------------------------ */
+
+export type Language = {
+  name: string;
+  /** The language's endonym — how it names itself. Null for English. */
+  native: string | null;
+  level: "Native" | "Fluent" | "Conversational" | "Basic";
+};
+
+export const LANGUAGES: Language[] = [
+  { name: "English", native: null, level: "Native" },
+  { name: "Telugu", native: "తెలుగు", level: "Native" },
+  { name: "Spanish", native: "Español", level: "Conversational" },
+  { name: "Japanese", native: "日本語", level: "Conversational" },
+];
+
 /** Non-technical interests — rendered as text, no logos. */
 export const INTERESTS = [
   "Embedded Systems",

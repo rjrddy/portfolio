@@ -581,6 +581,53 @@ button {
     border-radius: 999px;
 }
 
+/* --- Languages ------------------------------------------------------------ */
+
+.about-languages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+    margin-top: var(--s4);
+}
+
+.languages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: var(--s3);
+}
+
+.language {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+    padding: var(--s5);
+}
+
+.language__name {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+}
+
+.language__native {
+    font-family: var(--font-display), Georgia, serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-2);
+    line-height: 1.2;
+}
+
+.language__level {
+    margin-top: auto;
+    padding-top: var(--s3);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
 /* --- Projects ------------------------------------------------------------- */
 
 .projects {
