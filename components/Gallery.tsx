@@ -1,19 +1,45 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PHOTOS, type Photo } from "@/lib/content";
 
 /**
- * Two marquees running against each other. Photos alternate between the rows
- * so each gets a similar mix of portrait and landscape rather than one row
- * ending up all-tall and the other all-wide.
+ * Deterministic split used for SSR and the first client render. Once the
+ * component mounts we swap in a fresh Fisher-Yates shuffle so every visit
+ * gets a new order. Splitting server + client this way keeps hydration happy
+ * and avoids a flash of empty marquees.
  */
-const ROW_A: Photo[] = PHOTOS.filter((_, i) => i % 2 === 0);
-const ROW_B: Photo[] = PHOTOS.filter((_, i) => i % 2 === 1);
+const SSR_ROW_A: Photo[] = PHOTOS.filter((_, i) => i % 2 === 0);
+const SSR_ROW_B: Photo[] = PHOTOS.filter((_, i) => i % 2 === 1);
+
+function shuffle<T>(arr: readonly T[]): T[] {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
 
 export function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
+  const [shuffled, setShuffled] = useState(false);
+
+  // One shuffle per page load. The shuffle runs after mount, so the server
+  // and the initial client render both use the deterministic split above.
+  useEffect(() => {
+    setShuffled(true);
+  }, []);
+
+  const [rowA, rowB] = useMemo<[Photo[], Photo[]]>(() => {
+    if (!shuffled) return [SSR_ROW_A, SSR_ROW_B];
+    const mixed = shuffle(PHOTOS);
+    return [
+      mixed.filter((_, i) => i % 2 === 0),
+      mixed.filter((_, i) => i % 2 === 1),
+    ];
+  }, [shuffled]);
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((delta: number) => {
@@ -44,8 +70,8 @@ export function Gallery() {
   return (
     <>
       <div className="marquees">
-        <Marquee photos={ROW_A} direction="right" onOpen={setOpen} />
-        <Marquee photos={ROW_B} direction="left" onOpen={setOpen} />
+        <Marquee photos={rowA} direction="right" onOpen={setOpen} />
+        <Marquee photos={rowB} direction="left" onOpen={setOpen} />
       </div>
 
       {open !== null && (
