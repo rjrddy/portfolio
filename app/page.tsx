@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Gallery } from "@/components/Gallery";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
+import { ProjectVisual } from "@/components/ProjectVisual";
+import { Reveal } from "@/components/Reveal";
 import { TechIcon, TechRow } from "@/components/TechIcon";
 import {
   ABOUT,
@@ -24,6 +26,7 @@ export default function Home() {
       </div>
 
       <Nav />
+      <Reveal />
 
       <main>
         <Hero />
@@ -61,7 +64,12 @@ export default function Home() {
             {EXPERIENCE.map((job) => (
               <li key={job.company} className="glass panel role">
                 <header className="role__head">
-                  <div>
+                  <BrandMark
+                    logo={job.logo}
+                    monogram={job.monogram}
+                    name={job.company}
+                  />
+                  <div className="role__title-block">
                     <h3 className="role__company">{job.company}</h3>
                     <p className="role__title">{job.role}</p>
                   </div>
@@ -83,7 +91,12 @@ export default function Home() {
 
             <li className="glass panel role role--edu">
               <header className="role__head">
-                <div>
+                <BrandMark
+                  logo={EDUCATION.logo}
+                  monogram={EDUCATION.monogram}
+                  name={EDUCATION.school}
+                />
+                <div className="role__title-block">
                   <h3 className="role__company">{EDUCATION.school}</h3>
                   <p className="role__title">{EDUCATION.degree}</p>
                 </div>
@@ -149,13 +162,24 @@ export default function Home() {
                         sizes="(max-width: 800px) 100vw, 50vw"
                         quality={80}
                       />
+                    ) : project.visual ? (
+                      <ProjectVisual kind={project.visual} />
                     ) : (
-                      // No screenshot yet — fall back to the stack as artwork.
+                      // No screenshot or bespoke art yet — fall back to the stack.
                       <div className="project__placeholder" aria-hidden="true">
                         <TechRow items={project.stack.slice(0, 3)} />
                       </div>
                     )}
                     {project.award && <span className="project__award">{project.award}</span>}
+                    {project.status && (
+                      <span
+                        className={`project__status project__status--${project.status}`}
+                      >
+                        {project.status === "in-progress"
+                          ? "In Progress"
+                          : "Planned"}
+                      </span>
+                    )}
                   </div>
 
                   <div className="project__body">
@@ -233,6 +257,35 @@ export default function Home() {
   );
 }
 
+function BrandMark({
+  logo,
+  monogram,
+  name,
+}: {
+  logo?: string | null;
+  monogram: string;
+  name: string;
+}) {
+  if (logo) {
+    return (
+      <span className="role__brand" aria-hidden="true">
+        {/* Plain <img> so a missing file degrades to broken-image rather than
+            hard-failing next/image at build. Swap to next/image once locked. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logo} alt="" />
+      </span>
+    );
+  }
+  return (
+    <span
+      className="role__brand role__brand--monogram"
+      aria-label={`${name} logo`}
+    >
+      {monogram}
+    </span>
+  );
+}
+
 function Section({
   id,
   title,
@@ -245,7 +298,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="section">
+    <section id={id} className="section reveal">
       <div className="section__inner">
         <header className="section__head">
           <h2 className="section__title">{title}</h2>

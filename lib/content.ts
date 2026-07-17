@@ -41,6 +41,10 @@ export type Job = {
   dates: string;
   bullets: string[];
   stack: TechKey[];
+  /** Path to a logo in /public/logos/, e.g. "/logos/l3harris.svg". */
+  logo?: string | null;
+  /** 1–3 char fallback shown when `logo` is unset. Use to keep the mark visually tight. */
+  monogram: string;
 };
 
 export const EXPERIENCE: Job[] = [
@@ -55,6 +59,8 @@ export const EXPERIENCE: Job[] = [
       "Automated CI/CD testing with pipelines, integrating static code analysis and integration testing.",
     ],
     stack: ["python", "cpp", "podman", "linux", "githubactions"],
+    logo: null,
+    monogram: "L3",
   },
   {
     company: "Doxy.me",
@@ -66,6 +72,8 @@ export const EXPERIENCE: Job[] = [
       "Deployed inference pipelines on SageMaker & Fargate, improving diagnostic accuracy with reinforcement learning.",
     ],
     stack: ["pytorch", "python", "aws", "docker"],
+    logo: null,
+    monogram: "D",
   },
   {
     company: "University of Utah",
@@ -77,6 +85,8 @@ export const EXPERIENCE: Job[] = [
       "Expanded OSS-Fuzz testing coverage, using compile-time options to improve the robustness of full-stack libraries.",
     ],
     stack: ["c", "cpp", "python", "linux", "git"],
+    logo: null,
+    monogram: "U",
   },
   {
     company: "HEXstream",
@@ -88,6 +98,8 @@ export const EXPERIENCE: Job[] = [
       "Developed automated workflows for ingestion, cleansing, and aggregation, supporting distributed analytics systems.",
     ],
     stack: ["azure", "python", "pandas"],
+    logo: null,
+    monogram: "H",
   },
 ];
 
@@ -96,6 +108,8 @@ export const EDUCATION = {
   degree: "B.S. Computer Science",
   location: "Salt Lake City, UT",
   dates: "Graduated May 2025",
+  logo: null as string | null,
+  monogram: "U",
   coursework: [
     "Computer Systems",
     "Machine Learning",
@@ -121,11 +135,22 @@ export const SKILL_GROUPS: { title: string; items: TechKey[] }[] = [
   },
   {
     title: "Frameworks & Libraries",
-    items: ["react", "nextjs", "node", "django", "dotnet", "pytorch", "pandas", "numpy"],
+    items: ["react", "nextjs", "node", "django", "dotnet", "pytorch", "pandas", "numpy", "webgl"],
   },
   {
     title: "Infrastructure & Data",
-    items: ["aws", "azure", "docker", "podman", "linux", "postgresql", "mongodb", "git"],
+    items: [
+      "aws",
+      "azure",
+      "docker",
+      "kubernetes",
+      "podman",
+      "linux",
+      "raspberrypi",
+      "postgresql",
+      "mongodb",
+      "git",
+    ],
   },
 ];
 
@@ -172,6 +197,18 @@ export type ProjectLink = {
   kind?: "repo" | "demo" | "writeup";
 };
 
+/**
+ * Bespoke SVG artwork rendered in the media slot when there's no screenshot.
+ * Each key corresponds to a component in components/ProjectVisual.tsx.
+ */
+export type ProjectVisualKind =
+  | "schedule"
+  | "checklist"
+  | "sphere"
+  | "waveform"
+  | "network"
+  | "beacon";
+
 export type Project = {
   title: string;
   blurb: string;
@@ -181,6 +218,10 @@ export type Project = {
   links: ProjectLink[];
   featured?: boolean;
   award?: string;
+  /** Undefined = shipped. Anything else surfaces a badge — flip to undefined on ship. */
+  status?: "in-progress" | "planned";
+  /** Signature visual for the card. Falls back to tech-icon placeholder if unset. */
+  visual?: ProjectVisualKind;
 };
 
 export const PROJECTS: Project[] = [
@@ -194,6 +235,7 @@ export const PROJECTS: Project[] = [
     links: [],
     featured: true,
     award: "Class Best Project",
+    visual: "schedule",
   },
   {
     title: "Accountability Tracker",
@@ -203,6 +245,7 @@ export const PROJECTS: Project[] = [
     image: null,
     stack: ["nextjs", "typescript", "firebase", "postgresql", "prisma"],
     links: [],
+    visual: "checklist",
   },
   {
     title: "Ray Tracing Engine",
@@ -212,6 +255,37 @@ export const PROJECTS: Project[] = [
     image: null,
     stack: ["javascript", "webgl"],
     links: [],
+    visual: "sphere",
+  },
+  {
+    title: "Sonar",
+    blurb: "A DSP playground for the browser.",
+    description:
+      "Real-time signal-processing sandbox — WebAssembly-backed FFT and filter kernels, live spectrograms, and MIDI-controlled effects. A visual, tinker-friendly lens on the signal-processing work I do day to day.",
+    image: null,
+    stack: ["typescript", "react", "webgl", "cpp"],
+    links: [],
+    visual: "waveform",
+  },
+  {
+    title: "Photon",
+    blurb: "Sharded computer-vision inference across edge devices.",
+    description:
+      "A Kubernetes-orchestrated inference service that shards vision models across a fleet of low-power nodes. Adaptive batching, graceful degradation, and cold-start warm-up — the operational hard parts of running ML outside a datacenter.",
+    image: null,
+    stack: ["python", "pytorch", "kubernetes", "docker", "raspberrypi"],
+    links: [],
+    visual: "network",
+  },
+  {
+    title: "Beacon",
+    blurb: "A private research assistant powered by local LLMs.",
+    description:
+      "Retrieval-augmented generation over personal notes, papers, and code, powered by open-weight models running locally. Vector search in Postgres via pgvector, a tool-using agent loop, and a chat UI — an assistant that never leaves your machine.",
+    image: null,
+    stack: ["python", "pytorch", "nextjs", "typescript", "postgresql"],
+    links: [],
+    visual: "beacon",
   },
 ];
 

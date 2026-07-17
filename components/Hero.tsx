@@ -56,11 +56,6 @@ export function Hero() {
           {SITE.tagline}
         </p>
       </div>
-
-      <a href="#about" className="hero__scroll" data-visible={done} aria-label="Scroll to content">
-        <span>Scroll</span>
-        <span className="hero__scroll-line" />
-      </a>
     </section>
   );
 }
