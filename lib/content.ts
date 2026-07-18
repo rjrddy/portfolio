@@ -6,7 +6,7 @@ import type { TechKey } from "./tech-icons";
  */
 
 export const SITE = {
-  name: "Raj Reddy",
+  name: "Raj",
   role: "Software Engineer",
   tagline: "Software engineer. Photographer. Curious mind.",
   email: "rajreddy23@outlook.com",
