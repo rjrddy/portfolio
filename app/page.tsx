@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Gallery } from "@/components/Gallery";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
-import { ProjectVisual } from "@/components/ProjectVisual";
+import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { TechIcon, TechRow } from "@/components/TechIcon";
 import {
@@ -121,8 +121,11 @@ export default function Home() {
               <div key={group.title} className="glass panel skills__group">
                 <span className="eyebrow">{group.title}</span>
                 <ul className="skills__grid">
-                  {group.items.map((key) => (
-                    <li key={key}>
+                  {group.items.map((key, i) => (
+                    <li
+                      key={key}
+                      style={{ "--i": i } as React.CSSProperties}
+                    >
                       <TechIcon name={key} showLabel />
                     </li>
                   ))}
@@ -144,82 +147,9 @@ export default function Home() {
         {/* ------------------------------------------------------- Projects */}
         <Section id="projects" title="Projects">
           <div className="projects">
-            {PROJECTS.map((project) => {
-              const primary = project.links[0];
-
-              const body = (
-                <article
-                  className={`glass panel project${
-                    project.featured ? " project--featured" : ""
-                  }`}
-                >
-                  <div className="project__media">
-                    {project.image ? (
-                      <Image
-                        src={project.image}
-                        alt=""
-                        fill
-                        sizes="(max-width: 800px) 100vw, 50vw"
-                        quality={80}
-                      />
-                    ) : project.visual ? (
-                      <ProjectVisual kind={project.visual} />
-                    ) : (
-                      // No screenshot or bespoke art yet — fall back to the stack.
-                      <div className="project__placeholder" aria-hidden="true">
-                        <TechRow items={project.stack.slice(0, 3)} />
-                      </div>
-                    )}
-                    {project.award && <span className="project__award">{project.award}</span>}
-                    {project.status && (
-                      <span
-                        className={`project__status project__status--${project.status}`}
-                      >
-                        {project.status === "in-progress"
-                          ? "In Progress"
-                          : "Planned"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="project__body">
-                    <h3 className="project__title">{project.title}</h3>
-                    <p className="project__blurb">{project.blurb}</p>
-                    <p className="project__desc">{project.description}</p>
-
-                    <TechRow items={project.stack} />
-
-                    {project.links.length > 0 && (
-                      <div className="project__links">
-                        {project.links.map((link) => (
-                          <span key={link.href} className="project__link">
-                            {link.label}
-                            <span aria-hidden="true">→</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-
-              // The whole card is the click target when there's somewhere to go.
-              return primary ? (
-                <a
-                  key={project.title}
-                  href={primary.href}
-                  className="project__wrap project__wrap--link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {body}
-                </a>
-              ) : (
-                <div key={project.title} className="project__wrap">
-                  {body}
-                </div>
-              );
-            })}
+            {PROJECTS.map((project) => (
+              <ProjectCard key={project.title} project={project} />
+            ))}
           </div>
         </Section>
 
@@ -301,7 +231,21 @@ function Section({
     <section id={id} className="section reveal">
       <div className="section__inner">
         <header className="section__head">
-          <h2 className="section__title">{title}</h2>
+          <h2 className="section__title">
+            <span className="section__title-text">
+              {title.split("").map((ch, i) => (
+                <span
+                  key={i}
+                  className="section__title-char"
+                  style={{ "--i": i } as React.CSSProperties}
+                  aria-hidden="true"
+                >
+                  {ch === " " ? " " : ch}
+                </span>
+              ))}
+              <span className="visually-hidden">{title}</span>
+            </span>
+          </h2>
           {lead && <p className="section__lead">{lead}</p>}
         </header>
         {children}

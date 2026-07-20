@@ -403,6 +403,32 @@ button {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.28), transparent);
 }
 
+/* Split-text scaffold: each character gets its own animatable span. Kept as
+   inline-block so letter-spacing still applies between them. `--i` (set in
+   JSX) is the per-char stagger index. */
+.section__title-text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.section__title-char {
+    display: inline-block;
+    transition-delay: calc(var(--i, 0) * 45ms);
+    will-change: transform, opacity, filter;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .section__lead {
     max-width: var(--measure);
     margin-top: var(--s3);
@@ -682,6 +708,24 @@ button {
     flex-direction: column;
     gap: var(--s1);
     padding: var(--s5);
+    transition:
+        transform 0.45s cubic-bezier(0.34, 1.5, 0.64, 1),
+        border-color 0.3s ease,
+        background-color 0.3s ease;
+}
+
+.language:hover {
+    transform: translateY(-4px);
+    border-color: var(--glass-line-hover);
+    background: var(--glass-bg-hover);
+}
+
+.language:hover .language__level {
+    color: var(--accent);
+}
+
+.language:hover .language__native {
+    color: var(--ink);
 }
 
 .language__name {
@@ -718,22 +762,51 @@ button {
 
 .project__wrap {
     display: block;
+    /* The transform is handed to the inner .project by ProjectCard — the
+       wrap stays a flat layout container. */
 }
 
 .project {
+    position: relative;
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 0;
     overflow: hidden;
     padding: 0;
-    transition: border-color 0.25s ease, background-color 0.25s ease,
-        transform 0.35s var(--ease);
+    transform-style: preserve-3d;
+    /* Inline transform + transition come from ProjectCard.tsx so the tilt
+       tracks fluidly; hover-only decorations (bg, border) still live here. */
+    transition: border-color 0.3s ease, background-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .project__wrap--link:hover .project {
     background: var(--glass-bg-hover);
     border-color: var(--glass-line-hover);
-    transform: translateY(-2px);
+    box-shadow:
+        0 30px 60px -30px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(89, 255, 185, 0.06);
+}
+
+/* Cursor-tracked accent sheen. Sits above the card surface and fades
+   in/out based on ProjectCard's data-tilting flag. `--pointer-x/y` are set
+   inline from the same mouse handler that drives the tilt. */
+.project__sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    background: radial-gradient(
+        360px circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+        rgba(89, 255, 185, 0.12),
+        transparent 55%
+    );
+    transition: opacity 0.35s ease;
+}
+
+.project[data-tilting] .project__sheen {
+    opacity: 1;
 }
 
 .project__media {
@@ -1076,6 +1149,7 @@ button {
 }
 
 .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     padding: 0.5rem 1.125rem;
@@ -1085,13 +1159,46 @@ button {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--glass-line);
     border-radius: 999px;
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s var(--ease);
+}
+
+/* Diagonal shine that sweeps across the button on hover. Pure eye-candy. */
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.14) 50%,
+        transparent 70%
+    );
+    transform: translateX(-110%);
+    transition: transform 0.65s var(--ease);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .btn:hover {
     color: var(--ink);
     background: rgba(255, 255, 255, 0.09);
     border-color: var(--glass-line-hover);
+    transform: translateY(-2px);
+}
+
+.btn:hover::before {
+    transform: translateX(110%);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 0.08s;
 }
 
 .btn--accent {
@@ -1106,6 +1213,15 @@ button {
     border-color: var(--accent);
 }
 
+.btn--accent::before {
+    background: linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 70%
+    );
+}
+
 /* --- Footer --------------------------------------------------------------- */
 
 .footer {
@@ -1118,116 +1234,193 @@ button {
 }
 
 /* --- Reveal on scroll ---------------------------------------------------- *
- * Each section gets its own signature entrance — driven by components/Reveal.tsx
- * which flips `.reveal` → `.is-visible` as sections enter the viewport.
- * Motion is disabled by prefers-reduced-motion further below.
+ * `.reveal` is now a marker only — the section itself stays fully opaque so
+ * title chars and content can animate on independent layers without their
+ * opacities compounding. Every section gets a unique signature: title char
+ * choreography + a content-body entrance. Driven by components/Reveal.tsx.
  * ------------------------------------------------------------------------- */
 
-.reveal {
+.reveal { }
+
+/* ---- Section title choreography — one signature per section ------------ */
+
+/* About: chars drift up from below with a springy overshoot. */
+#about.reveal .section__title-char {
     opacity: 0;
+    transform: translateY(0.55em);
     transition:
-        opacity 900ms var(--ease),
-        transform 900ms var(--ease),
-        filter 900ms var(--ease);
-    will-change: opacity, transform, filter;
+        opacity 550ms var(--ease),
+        transform 650ms cubic-bezier(0.34, 1.5, 0.64, 1);
 }
-
-.reveal.is-visible {
+#about.reveal.is-visible .section__title-char {
     opacity: 1;
-}
-
-/* About — soft fade + rise as a single unit. */
-#about.reveal {
-    transform: translateY(28px);
-}
-#about.reveal.is-visible {
     transform: none;
 }
 
-/* Experience — items slide in from the left, staggered like a reading order. */
-#experience.reveal {
-    opacity: 1;
-    transition: none;
-}
-#experience.reveal .timeline > li {
+/* Experience: chars slide in from the left, in reading order. */
+#experience.reveal .section__title-char {
     opacity: 0;
-    transform: translateX(-36px);
+    transform: translateX(-0.6em);
     transition:
-        opacity 700ms var(--ease),
-        transform 700ms var(--ease);
+        opacity 500ms var(--ease),
+        transform 600ms var(--ease);
 }
-#experience.reveal.is-visible .timeline > li {
+#experience.reveal.is-visible .section__title-char {
     opacity: 1;
     transform: none;
 }
-#experience.reveal.is-visible .timeline > li:nth-child(1) { transition-delay:   0ms; }
-#experience.reveal.is-visible .timeline > li:nth-child(2) { transition-delay: 110ms; }
-#experience.reveal.is-visible .timeline > li:nth-child(3) { transition-delay: 220ms; }
-#experience.reveal.is-visible .timeline > li:nth-child(4) { transition-delay: 330ms; }
-#experience.reveal.is-visible .timeline > li:nth-child(5) { transition-delay: 440ms; }
 
-/* Skills — cards pop into being with a subtle scale-up, staggered. */
-#skills.reveal {
-    opacity: 1;
-    transition: none;
-}
-#skills.reveal .skills__group {
+/* Skills: chars pop from very small with a bounce. */
+#skills.reveal .section__title-char {
     opacity: 0;
-    transform: scale(0.93) translateY(12px);
+    transform: scale(0.2);
+    transform-origin: center;
     transition:
-        opacity 650ms var(--ease),
-        transform 650ms var(--ease);
+        opacity 450ms ease,
+        transform 600ms cubic-bezier(0.34, 1.8, 0.64, 1);
 }
-#skills.reveal.is-visible .skills__group {
+#skills.reveal.is-visible .section__title-char {
     opacity: 1;
     transform: none;
 }
-#skills.reveal.is-visible .skills__group:nth-child(1) { transition-delay:   0ms; }
-#skills.reveal.is-visible .skills__group:nth-child(2) { transition-delay: 100ms; }
-#skills.reveal.is-visible .skills__group:nth-child(3) { transition-delay: 200ms; }
-#skills.reveal.is-visible .skills__group:nth-child(4) { transition-delay: 300ms; }
 
-/* Projects — cards rise and fade in one after another. */
-#projects.reveal {
-    opacity: 1;
-    transition: none;
-}
-#projects.reveal .project__wrap {
+/* Projects: chars flip up on the X axis, like a split-flap display. */
+#projects.reveal .section__title-char {
     opacity: 0;
-    transform: translateY(36px);
+    transform: rotateX(-90deg);
+    transform-origin: center bottom;
     transition:
-        opacity 800ms var(--ease),
+        opacity 500ms ease,
+        transform 700ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+#projects.reveal.is-visible .section__title-char {
+    opacity: 1;
+    transform: none;
+}
+
+/* Photography: chars come into focus from a soft blur. */
+#photography.reveal .section__title-char {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(1.18);
+    transition:
+        opacity 700ms ease,
+        filter 800ms var(--ease),
         transform 800ms var(--ease);
 }
-#projects.reveal.is-visible .project__wrap {
+#photography.reveal.is-visible .section__title-char {
     opacity: 1;
-    transform: none;
-}
-#projects.reveal.is-visible .project__wrap:nth-child(1) { transition-delay:   0ms; }
-#projects.reveal.is-visible .project__wrap:nth-child(2) { transition-delay:  90ms; }
-#projects.reveal.is-visible .project__wrap:nth-child(3) { transition-delay: 180ms; }
-#projects.reveal.is-visible .project__wrap:nth-child(4) { transition-delay: 270ms; }
-#projects.reveal.is-visible .project__wrap:nth-child(5) { transition-delay: 360ms; }
-#projects.reveal.is-visible .project__wrap:nth-child(6) { transition-delay: 450ms; }
-
-/* Photography — blurs into focus and settles down a hair. */
-#photography.reveal {
-    filter: blur(18px);
-    transform: scale(1.02);
-}
-#photography.reveal.is-visible {
     filter: blur(0);
     transform: none;
 }
 
-/* Connect — glows on: dim, then brightens up. */
-#connect.reveal {
-    transform: translateY(14px);
-    filter: brightness(0.55);
+/* Connect: chars glow on — start dim, brighten and settle down. */
+#connect.reveal .section__title-char {
+    opacity: 0;
+    transform: translateY(0.3em);
+    filter: brightness(0.35);
+    transition:
+        opacity 550ms ease,
+        transform 600ms var(--ease),
+        filter 700ms ease;
 }
-#connect.reveal.is-visible {
+#connect.reveal.is-visible .section__title-char {
+    opacity: 1;
     transform: none;
     filter: brightness(1);
+}
+
+/* ---- Content-body entrances (independent layer) ------------------------ *
+ * Every content component slides in horizontally, alternating: odd children
+ * come from the left, even from the right. Single-child sections pick a side
+ * to keep the rhythm going as the visitor scrolls the page.
+ *
+ * Ordering matters below: the shared "is-visible" reset rule sits LAST so it
+ * wins the specificity tie against the `nth-child` transforms above (both
+ * resolve to (1,3,1); later source order breaks the tie).
+ * ------------------------------------------------------------------------ */
+
+/* Shared pre-reveal: hidden + transition tokens. Transforms come per-section. */
+#about.reveal .about,
+#about.reveal .about-languages,
+#experience.reveal .timeline > li,
+#skills.reveal .skills__group,
+#projects.reveal .project__wrap,
+#photography.reveal .marquees,
+#connect.reveal .connect {
+    opacity: 0;
+    transition:
+        opacity 750ms var(--ease),
+        transform 750ms cubic-bezier(0.34, 1.28, 0.64, 1);
+    will-change: opacity, transform;
+}
+
+/* About — bio from the left, languages from the right. */
+#about.reveal .about               { transform: translateX(-56px); }
+#about.reveal .about-languages     { transform: translateX( 56px); }
+
+/* Experience — five roles, alternating L/R. */
+#experience.reveal .timeline > li:nth-child(odd)  { transform: translateX(-56px); }
+#experience.reveal .timeline > li:nth-child(even) { transform: translateX( 56px); }
+
+/* Skills — four groups, alternating L/R. */
+#skills.reveal .skills__group:nth-child(odd)  { transform: translateX(-56px); }
+#skills.reveal .skills__group:nth-child(even) { transform: translateX( 56px); }
+
+/* Projects — six cards, alternating L/R. */
+#projects.reveal .project__wrap:nth-child(odd)  { transform: translateX(-56px); }
+#projects.reveal .project__wrap:nth-child(even) { transform: translateX( 56px); }
+
+/* Photography & Connect — single-component sections, one side each. */
+#photography.reveal .marquees      { transform: translateX(-56px); }
+#connect.reveal .connect           { transform: translateX( 56px); }
+
+/* Per-item stagger — sets transition-delay only, no transform conflict. */
+#about.reveal.is-visible .about               { transition-delay: 180ms; }
+#about.reveal.is-visible .about-languages     { transition-delay: 320ms; }
+#experience.reveal.is-visible .timeline > li:nth-child(1) { transition-delay: 180ms; }
+#experience.reveal.is-visible .timeline > li:nth-child(2) { transition-delay: 280ms; }
+#experience.reveal.is-visible .timeline > li:nth-child(3) { transition-delay: 380ms; }
+#experience.reveal.is-visible .timeline > li:nth-child(4) { transition-delay: 480ms; }
+#experience.reveal.is-visible .timeline > li:nth-child(5) { transition-delay: 580ms; }
+#skills.reveal.is-visible .skills__group:nth-child(1) { transition-delay: 180ms; }
+#skills.reveal.is-visible .skills__group:nth-child(2) { transition-delay: 260ms; }
+#skills.reveal.is-visible .skills__group:nth-child(3) { transition-delay: 340ms; }
+#skills.reveal.is-visible .skills__group:nth-child(4) { transition-delay: 420ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(1) { transition-delay: 180ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(2) { transition-delay: 260ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(3) { transition-delay: 340ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(4) { transition-delay: 420ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(5) { transition-delay: 500ms; }
+#projects.reveal.is-visible .project__wrap:nth-child(6) { transition-delay: 580ms; }
+#photography.reveal.is-visible .marquees { transition-delay: 220ms; }
+#connect.reveal.is-visible .connect      { transition-delay: 220ms; }
+
+/* Skill icons — cascade individually within each group after the group lands. */
+#skills.reveal .skills__group li {
+    opacity: 0;
+    transform: translateY(6px) scale(0.78);
+    transition:
+        opacity 350ms ease,
+        transform 500ms cubic-bezier(0.34, 1.7, 0.64, 1);
+}
+#skills.reveal.is-visible .skills__group li {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(480ms + var(--i, 0) * 40ms);
+}
+
+/* Shared reset — MUST be last: its `transform: none` needs to win the tie
+   against the `nth-child` transforms above. */
+#about.reveal.is-visible .about,
+#about.reveal.is-visible .about-languages,
+#experience.reveal.is-visible .timeline > li,
+#skills.reveal.is-visible .skills__group,
+#projects.reveal.is-visible .project__wrap,
+#photography.reveal.is-visible .marquees,
+#connect.reveal.is-visible .connect {
+    opacity: 1;
+    transform: none;
 }
 
 /* --- Responsive ----------------------------------------------------------- */
@@ -1388,9 +1581,15 @@ button {
 
     /* Belt-and-braces: even if the observer misfires, nothing stays hidden. */
     .reveal,
+    .reveal .section__title-char,
+    .reveal .about,
+    .reveal .about-languages,
     .reveal .timeline > li,
     .reveal .skills__group,
-    .reveal .project__wrap {
+    .reveal .skills__group li,
+    .reveal .project__wrap,
+    .reveal .marquees,
+    .reveal .connect {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
