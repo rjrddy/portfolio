@@ -254,7 +254,13 @@ export const PROJECTS: Project[] = [
       "Interactive WebGL ray tracing engine with realistic reflections, dynamic lighting, and customizable environment maps. Hand-written shaders plus user controls for rendering techniques and scene adjustment.",
     image: null,
     stack: ["javascript", "webgl"],
-    links: [],
+    links: [
+      {
+        label: "Live demo",
+        href: "https://ray-tracing-engine.vercel.app/",
+        kind: "demo",
+      },
+    ],
     visual: "sphere",
   },
   {
