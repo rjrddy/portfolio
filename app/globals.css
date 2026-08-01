@@ -969,208 +969,193 @@ button {
     transform: translateX(3px);
 }
 
-/* --- Photography ---------------------------------------------------------- */
+/* --- Photography ---------------------------------------------------------- *
+ * Gear strip (two camera cards) sits above a CSS-column masonry archive that
+ * keeps every photo at its native aspect ratio, letting portraits and
+ * landscapes settle beside each other naturally (no crops, no math).       */
 
-/* Camera showcase — 3D viewer + spec panel. Two columns on desktop, stacked
-   on mobile. */
-.camera-showcase {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
-    gap: var(--s5);
-    margin-bottom: var(--s6);
-    align-items: stretch;
+/* Shared "row divider + label" used above both the Gear and Archive blocks. */
+.gallery-subhead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: var(--s6) 0 var(--s3);
+    padding-bottom: var(--s2);
+    border-bottom: 1px solid var(--glass-line);
 }
 
-.camera-showcase__stage {
-    position: relative;
-    aspect-ratio: 5 / 4;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background:
-        radial-gradient(ellipse at 50% 40%, rgba(89, 255, 185, 0.08), transparent 65%),
-        rgba(8, 9, 11, 0.35);
-    border: 1px solid var(--glass-line);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.camera-viewer {
-    position: absolute;
-    inset: 0;
-    cursor: grab;
-}
-.camera-viewer:active { cursor: grabbing; }
-
-.camera-viewer--loading {
-    /* Show a subtle pulse while three.js loads in. */
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.04) 50%,
-        transparent 100%
-    );
-    background-size: 200% 100%;
-    animation: camera-loading 1.6s ease-in-out infinite;
-}
-
-@keyframes camera-loading {
-    from { background-position: 200% 0; }
-    to   { background-position: -200% 0; }
-}
-
-.camera-showcase__hint {
-    position: absolute;
-    left: 50%;
-    bottom: var(--s3);
-    transform: translateX(-50%);
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+.gallery-subhead__aside {
+    font-family: var(--font-display), Georgia, serif;
+    font-style: italic;
+    font-size: 0.875rem;
     color: var(--ink-3);
-    text-shadow: var(--text-halo);
-    pointer-events: none;
-    user-select: none;
-    opacity: 0.75;
 }
 
-.camera-showcase__spec {
+/* --- Gear (Fujifilm X-T4 · Canon AE-1) ---------------------------------- */
+.camera-credits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--s3);
+    margin-bottom: var(--s2);
+}
+
+.camera-credits__card {
     display: flex;
     flex-direction: column;
-    gap: var(--s3);
+    gap: var(--s2);
 }
 
-.camera-showcase__body {
+.camera-credits__kind {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(89, 255, 185, 0.28);
+}
+
+.camera-credits__body {
+    margin-top: var(--s1);
     font-family: var(--font-display), Georgia, serif;
-    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 2.2vw, 1.75rem);
     font-weight: 500;
     letter-spacing: -0.01em;
     color: var(--ink);
     line-height: 1.15;
 }
 
-.camera-showcase__lens {
+.camera-credits__lens {
     font-size: 0.9375rem;
     color: var(--accent);
     letter-spacing: 0.005em;
 }
 
-.camera-showcase__meta {
+.camera-credits__meta {
     display: grid;
     gap: var(--s2);
-    margin-top: var(--s1);
+    margin-top: var(--s2);
     padding-top: var(--s3);
     border-top: 1px solid var(--glass-line);
 }
 
-.camera-showcase__meta > div {
+.camera-credits__meta > div {
     display: grid;
     grid-template-columns: 90px 1fr;
     gap: var(--s2);
     align-items: baseline;
 }
 
-.camera-showcase__meta dt {
+.camera-credits__meta dt {
     font-size: 0.6875rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink-3);
 }
 
-.camera-showcase__meta dd {
+.camera-credits__meta dd {
     font-size: 0.875rem;
     color: var(--ink-2);
 }
 
-.camera-showcase__notes {
-    font-size: 0.875rem;
-    line-height: 1.65;
-    color: var(--ink-2);
-    margin-top: auto;
-    padding-top: var(--s3);
-    border-top: 1px solid var(--glass-line);
+
+/* CSS columns give reliable masonry across browsers without JS. Each cell
+   guards against a mid-photo break with break-inside: avoid. */
+.gallery-masonry {
+    columns: 3 260px;
+    column-gap: var(--s2);
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
-/* Two rows scrolling in opposite directions. The row fixes the height and each
-   photo's width follows its own aspect ratio, so nothing is cropped. */
-/* Full-bleed: breaks out of the centred section container so the rows run edge
-   to edge of the viewport. `body` already clips overflow-x, so the 100vw width
-   can't introduce a horizontal scrollbar. */
-.marquees {
-    display: grid;
-    gap: var(--s2);
+.gallery-masonry__cell {
+    break-inside: avoid;
+    margin: 0 0 var(--s2);
+}
+
+.gallery-masonry__btn {
     position: relative;
-    left: 50%;
-    width: 100vw;
-    margin-left: -50vw;
-}
-
-.marquee {
-    overflow: hidden;
-}
-
-.marquee__track {
-    display: flex;
-    gap: var(--s2);
-    width: max-content;
-    /* Both rows travel the same distance; only the direction differs. */
-    animation: marquee-left 90s linear infinite;
-}
-
-.marquee__track--right {
-    animation-name: marquee-right;
-}
-
-/* Halving the track lands on an identical frame — the seam is invisible. */
-@keyframes marquee-left {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
-}
-
-@keyframes marquee-right {
-    from {
-        transform: translateX(-50%);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-.marquee:hover .marquee__track {
-    animation-play-state: paused;
-}
-
-.marquee__item {
-    flex: none;
-    height: 280px;
-}
-
-/* Square corners — the photo's own edges, uncropped and unrounded. */
-.marquee__btn {
     display: block;
-    height: 100%;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 1px solid transparent;
+    /* Hard edges — the photos read cleanly against each other. */
+    border-radius: 0;
     overflow: hidden;
-    border: 1px solid var(--glass-line);
-    transition: border-color 0.25s ease;
+    cursor: pointer;
+    transition:
+        transform 0.35s var(--ease),
+        border-color 0.3s ease,
+        box-shadow 0.35s ease;
 }
 
-/* Fully opaque — these sit on the bare photograph, so any transparency here
-   would let the backdrop bleed through and wash the frame out. */
-.marquee__btn img {
-    width: auto;
-    height: 100%;
-    transition: transform 0.5s var(--ease);
-}
-
-.marquee__btn:hover {
+.gallery-masonry__btn:hover,
+.gallery-masonry__btn:focus-visible {
+    transform: translateY(-3px);
     border-color: var(--glass-line-hover);
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.55);
+    outline: none;
 }
 
-.marquee__btn:hover img {
-    transform: scale(1.03);
+.gallery-masonry__btn img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.55s var(--ease);
+}
+
+.gallery-masonry__btn:hover img,
+.gallery-masonry__btn:focus-visible img {
+    transform: scale(1.02);
+}
+
+/* Caption/location overlay — reveals from the bottom on hover. */
+.gallery-masonry__overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: var(--s3) var(--s3) var(--s2);
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.78) 0%,
+        rgba(0, 0, 0, 0.55) 60%,
+        transparent 100%
+    );
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+        opacity 0.3s ease,
+        transform 0.35s var(--ease);
+    pointer-events: none;
+}
+
+.gallery-masonry__btn:hover .gallery-masonry__overlay,
+.gallery-masonry__btn:focus-visible .gallery-masonry__overlay {
+    opacity: 1;
+    transform: none;
+}
+
+.gallery-masonry__caption {
+    font-size: 0.8125rem;
+    color: #fff;
+    line-height: 1.35;
+}
+
+.gallery-masonry__loc {
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
 }
 
 /* --- Lightbox ------------------------------------------------------------- */
@@ -1497,7 +1482,8 @@ button {
 #experience.reveal .timeline > li,
 #skills.reveal .skills__group,
 #projects.reveal .project__wrap,
-#photography.reveal .marquees,
+#photography.reveal .gallery-subhead,
+#photography.reveal .camera-credits__card,
 #connect.reveal .connect {
     opacity: 0;
     transition:
@@ -1522,9 +1508,11 @@ button {
 #projects.reveal .project__wrap:nth-child(odd)  { transform: translateX(-56px); }
 #projects.reveal .project__wrap:nth-child(even) { transform: translateX( 56px); }
 
-/* Photography & Connect — single-component sections, one side each. */
-#photography.reveal .marquees      { transform: translateX(-56px); }
-#connect.reveal .connect           { transform: translateX( 56px); }
+/* Photography — subheads from right, gear cards alternate L/R. */
+#photography.reveal .gallery-subhead                     { transform: translateX( 56px); }
+#photography.reveal .camera-credits__card:nth-child(odd) { transform: translateX(-56px); }
+#photography.reveal .camera-credits__card:nth-child(even){ transform: translateX( 56px); }
+#connect.reveal .connect                                 { transform: translateX( 56px); }
 
 /* Per-item stagger — sets transition-delay only, no transform conflict. */
 #about.reveal.is-visible .about               { transition-delay: 180ms; }
@@ -1544,8 +1532,10 @@ button {
 #projects.reveal.is-visible .project__wrap:nth-child(4) { transition-delay: 420ms; }
 #projects.reveal.is-visible .project__wrap:nth-child(5) { transition-delay: 500ms; }
 #projects.reveal.is-visible .project__wrap:nth-child(6) { transition-delay: 580ms; }
-#photography.reveal.is-visible .marquees { transition-delay: 220ms; }
-#connect.reveal.is-visible .connect      { transition-delay: 220ms; }
+#photography.reveal.is-visible .gallery-subhead                     { transition-delay: 220ms; }
+#photography.reveal.is-visible .camera-credits__card:nth-child(1)   { transition-delay: 300ms; }
+#photography.reveal.is-visible .camera-credits__card:nth-child(2)   { transition-delay: 380ms; }
+#connect.reveal.is-visible .connect                                 { transition-delay: 220ms; }
 
 /* Skill icons — cascade individually within each group after the group lands. */
 #skills.reveal .skills__group li {
@@ -1568,7 +1558,8 @@ button {
 #experience.reveal.is-visible .timeline > li,
 #skills.reveal.is-visible .skills__group,
 #projects.reveal.is-visible .project__wrap,
-#photography.reveal.is-visible .marquees,
+#photography.reveal.is-visible .gallery-subhead,
+#photography.reveal.is-visible .camera-credits__card,
 #connect.reveal.is-visible .connect {
     opacity: 1;
     transform: none;
@@ -1582,10 +1573,6 @@ button {
         gap: var(--s3);
     }
 
-    .marquee__item {
-        height: 220px;
-    }
-
     .project {
         grid-template-columns: 1fr;
     }
@@ -1596,22 +1583,12 @@ button {
         border-bottom: 1px solid var(--glass-line);
     }
 
-    /* Camera stacks: 3D viewer on top, spec panel below. */
-    .camera-showcase {
-        grid-template-columns: 1fr;
-        gap: var(--s4);
-    }
-
-    .camera-showcase__stage {
-        aspect-ratio: 4 / 3;
+    .gallery-masonry {
+        columns: 2 180px;
     }
 }
 
 @media (max-width: 700px) {
-    .marquee__item {
-        height: 180px;
-    }
-
     .section {
         padding: var(--s7) var(--s4);
     }
@@ -1729,17 +1706,6 @@ button {
         transition-duration: 0.01ms !important;
     }
 
-    /* The blanket rule above would snap the track to its end frame, hiding half
-       the row. Stop it outright and let the rows be swiped by hand instead. */
-    .marquee {
-        overflow-x: auto;
-    }
-
-    .marquee__track {
-        animation: none !important;
-        transform: none !important;
-    }
-
     /* Belt-and-braces: even if the observer misfires, nothing stays hidden. */
     .reveal,
     .reveal .section__title-char,
@@ -1749,7 +1715,8 @@ button {
     .reveal .skills__group,
     .reveal .skills__group li,
     .reveal .project__wrap,
-    .reveal .marquees,
+    .reveal .gallery-subhead,
+    .reveal .camera-credits__card,
     .reveal .connect {
         opacity: 1 !important;
         transform: none !important;

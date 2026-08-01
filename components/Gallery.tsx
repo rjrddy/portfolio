@@ -1,32 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CAMERA_SETUP, PHOTOS, type Photo } from "@/lib/content";
+import { CAMERAS, PHOTOS, type Photo } from "@/lib/content";
 
 /**
- * Three.js is heavy (~500KB gz) and only needed inside the Photography
- * section. Lazy-load it so the initial page bundle stays lean; the viewer
- * boots when this component mounts and the observer scrolls the section into
- * view. `ssr: false` keeps the r3f Canvas out of the server render.
+ * The Photography section:
+ *   1. A "Gear" strip with the two cameras.
+ *   2. A masonry archive of every photo at its native aspect ratio, laid out
+ *      via CSS columns so tall portraits and wide landscapes settle naturally
+ *      next to each other.
+ *   3. A lightbox that respects the source order for keyboard navigation.
  */
-const CameraViewer = dynamic(
-  () => import("./CameraViewer").then((m) => m.CameraViewer),
-  {
-    ssr: false,
-    loading: () => <div className="camera-viewer camera-viewer--loading" />,
-  }
-);
-
-/**
- * Deterministic split used for SSR and the first client render. Once the
- * component mounts we swap in a fresh Fisher-Yates shuffle so every visit
- * gets a new order. Splitting server + client this way keeps hydration happy
- * and avoids a flash of empty marquees.
- */
-const SSR_ROW_A: Photo[] = PHOTOS.filter((_, i) => i % 2 === 0);
-const SSR_ROW_B: Photo[] = PHOTOS.filter((_, i) => i % 2 === 1);
 
 function shuffle<T>(arr: readonly T[]): T[] {
   const out = arr.slice();
@@ -41,24 +26,26 @@ export function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
   const [shuffled, setShuffled] = useState(false);
 
+  // Shuffle the archive order once per page load. Keeps hydration clean by
+  // starting from source order and reshuffling on the client after mount.
   useEffect(() => {
     setShuffled(true);
   }, []);
 
-  const [rowA, rowB] = useMemo<[Photo[], Photo[]]>(() => {
-    if (!shuffled) return [SSR_ROW_A, SSR_ROW_B];
-    const mixed = shuffle(PHOTOS);
-    return [
-      mixed.filter((_, i) => i % 2 === 0),
-      mixed.filter((_, i) => i % 2 === 1),
-    ];
-  }, [shuffled]);
+  const archive = useMemo(
+    () => (shuffled ? shuffle(PHOTOS) : PHOTOS),
+    [shuffled]
+  );
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((delta: number) => {
     setOpen((i) =>
       i === null ? null : (i + delta + PHOTOS.length) % PHOTOS.length
     );
+  }, []);
+
+  const openAt = useCallback((photo: Photo) => {
+    setOpen(PHOTOS.findIndex((p) => p.src === photo.src));
   }, []);
 
   useEffect(() => {
@@ -86,42 +73,78 @@ export function Gallery() {
 
   return (
     <>
-      {/* ---------- Camera showcase ---------- */}
-      <div className="camera-showcase">
-        <div className="camera-showcase__stage">
-          <CameraViewer />
-          <span className="camera-showcase__hint" aria-hidden="true">
-            Drag to rotate · Scroll to zoom
-          </span>
-        </div>
-
-        <aside className="glass panel camera-showcase__spec">
-          <span className="eyebrow">Shot on</span>
-          <h3 className="camera-showcase__body">{CAMERA_SETUP.body}</h3>
-          <p className="camera-showcase__lens">{CAMERA_SETUP.lens}</p>
-
-          <dl className="camera-showcase__meta">
-            <div>
-              <dt>Sensor</dt>
-              <dd>{CAMERA_SETUP.sensor}</dd>
-            </div>
-            <div>
-              <dt>Mount</dt>
-              <dd>{CAMERA_SETUP.mount}</dd>
-            </div>
-          </dl>
-
-          <p className="camera-showcase__notes">{CAMERA_SETUP.notes}</p>
-        </aside>
+      {/* -------------------- Gear -------------------- */}
+      <div className="gallery-subhead">
+        <span className="eyebrow">The gear</span>
+        <span className="gallery-subhead__aside">Two systems</span>
       </div>
 
-      {/* ---------- Photo marquees ---------- */}
-      <div className="marquees">
-        <Marquee photos={rowA} direction="right" onOpen={setOpen} />
-        <Marquee photos={rowB} direction="left" onOpen={setOpen} />
+      <div className="camera-credits">
+        {CAMERAS.map((cam) => (
+          <article key={cam.body} className="glass panel camera-credits__card">
+            <span className="camera-credits__kind">{cam.kind}</span>
+            <h3 className="camera-credits__body">{cam.body}</h3>
+            <p className="camera-credits__lens">{cam.lens}</p>
+
+            <dl className="camera-credits__meta">
+              <div>
+                <dt>Format</dt>
+                <dd>{cam.format}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
       </div>
 
-      {/* ---------- Lightbox ---------- */}
+      {/* -------------------- Archive masonry -------------------- */}
+      <div className="gallery-subhead">
+        <span className="eyebrow">The archive</span>
+        <span className="gallery-subhead__aside">
+          {PHOTOS.length} frames
+        </span>
+      </div>
+
+      <ul className="gallery-masonry">
+        {archive.map((photo) => (
+          <li key={photo.src} className="gallery-masonry__cell">
+            <button
+              type="button"
+              className="gallery-masonry__btn"
+              onClick={() => openAt(photo)}
+              aria-label={
+                photo.caption ??
+                photo.location ??
+                "Open photograph in lightbox"
+              }
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt ?? photo.caption ?? ""}
+                width={photo.width}
+                height={photo.height}
+                sizes="(max-width: 700px) 50vw, (max-width: 1200px) 33vw, 300px"
+                quality={78}
+              />
+              {(photo.caption || photo.location) && (
+                <span className="gallery-masonry__overlay">
+                  {photo.caption && (
+                    <span className="gallery-masonry__caption">
+                      {photo.caption}
+                    </span>
+                  )}
+                  {photo.location && (
+                    <span className="gallery-masonry__loc">
+                      {photo.location}
+                    </span>
+                  )}
+                </span>
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* -------------------- Lightbox -------------------- */}
       {currentPhoto !== null && open !== null && (
         <div
           className="lightbox"
@@ -198,53 +221,5 @@ export function Gallery() {
         </div>
       )}
     </>
-  );
-}
-
-function Marquee({
-  photos,
-  direction,
-  onOpen,
-}: {
-  photos: Photo[];
-  direction: "left" | "right";
-  onOpen: (i: number) => void;
-}) {
-  const track = [...photos, ...photos];
-
-  return (
-    <div className="marquee">
-      <ul className={`marquee__track marquee__track--${direction}`}>
-        {track.map((photo, i) => {
-          const isClone = i >= photos.length;
-          const lightboxIndex = PHOTOS.findIndex((p) => p.src === photo.src);
-
-          return (
-            <li
-              key={`${photo.src}-${i}`}
-              className="marquee__item"
-              aria-hidden={isClone || undefined}
-            >
-              <button
-                type="button"
-                className="marquee__btn"
-                onClick={() => onOpen(lightboxIndex)}
-                tabIndex={isClone ? -1 : undefined}
-                aria-label={`Open photograph ${lightboxIndex + 1} of ${PHOTOS.length}`}
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt ?? ""}
-                  width={photo.width}
-                  height={photo.height}
-                  sizes="(max-width: 700px) 60vw, 30vw"
-                  quality={78}
-                />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   );
 }

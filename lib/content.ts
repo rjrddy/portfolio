@@ -304,6 +304,32 @@ export const PROJECTS: Project[] = [
 export const HERO_PHOTO = "/photos/wallpaper.jpg";
 
 /**
+ * The two cameras that shot every photo below — one digital, one film.
+ * Surfaced as glass "gear" cards inside the Photography section.
+ */
+export type Camera = {
+  kind: "Digital" | "Film";
+  body: string;
+  lens: string;
+  format: string;
+};
+
+export const CAMERAS: Camera[] = [
+  {
+    kind: "Digital",
+    body: "Fujifilm X-T4",
+    lens: "XF 18-55mm f/2.8-4 R LM OIS",
+    format: "APS-C · 26.1MP X-Trans CMOS 4",
+  },
+  {
+    kind: "Film",
+    body: "Canon AE-1",
+    lens: "FD 50mm f/1.8",
+    format: "35mm · Shutter-priority",
+  },
+];
+
+/**
  * Photos keep their native aspect ratio — never cropped. `width`/`height` are
  * the file's true pixel dimensions; the gallery derives the ratio from them.
  * `caption` is a short description of the subject; `location` is where it was
@@ -318,19 +344,6 @@ export type Photo = {
   caption?: string;
   /** Where it was shot. Shown next to the caption in the lightbox. */
   location?: string;
-};
-
-/**
- * The camera setup used for every photo below — surfaced next to the 3D
- * viewer in the Photography section. Edit here to swap gear.
- */
-export const CAMERA_SETUP = {
-  body: "Fujifilm X-T4",
-  lens: "XF 18-55mm f/2.8-4 R LM OIS",
-  sensor: "26.1MP APS-C X-Trans CMOS 4",
-  mount: "Fujifilm X",
-  notes:
-    "Kit lens does more than it's given credit for — sharp wide open, image-stabilized, and the perfect walkaround pairing with the X-T4's dial-first ergonomics.",
 };
 
 export const PHOTOS: Photo[] = [

@@ -154,7 +154,7 @@ export default function Home() {
         </Section>
 
         {/* ---------------------------------------------------- Photography */}
-        <Section id="photography" title="Photography" lead="A few frames I'm fond of.">
+        <Section id="photography" title="Photography" >
           <Gallery />
         </Section>
 
