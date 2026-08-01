@@ -1,8 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PHOTOS, type Photo } from "@/lib/content";
+import { CAMERA_SETUP, PHOTOS, type Photo } from "@/lib/content";
+
+/**
+ * Three.js is heavy (~500KB gz) and only needed inside the Photography
+ * section. Lazy-load it so the initial page bundle stays lean; the viewer
+ * boots when this component mounts and the observer scrolls the section into
+ * view. `ssr: false` keeps the r3f Canvas out of the server render.
+ */
+const CameraViewer = dynamic(
+  () => import("./CameraViewer").then((m) => m.CameraViewer),
+  {
+    ssr: false,
+    loading: () => <div className="camera-viewer camera-viewer--loading" />,
+  }
+);
 
 /**
  * Deterministic split used for SSR and the first client render. Once the
@@ -26,8 +41,6 @@ export function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
   const [shuffled, setShuffled] = useState(false);
 
-  // One shuffle per page load. The shuffle runs after mount, so the server
-  // and the initial client render both use the deterministic split above.
   useEffect(() => {
     setShuffled(true);
   }, []);
@@ -43,7 +56,9 @@ export function Gallery() {
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((delta: number) => {
-    setOpen((i) => (i === null ? null : (i + delta + PHOTOS.length) % PHOTOS.length));
+    setOpen((i) =>
+      i === null ? null : (i + delta + PHOTOS.length) % PHOTOS.length
+    );
   }, []);
 
   useEffect(() => {
@@ -67,14 +82,47 @@ export function Gallery() {
     };
   }, [open, close, step]);
 
+  const currentPhoto = open !== null ? PHOTOS[open] : null;
+
   return (
     <>
+      {/* ---------- Camera showcase ---------- */}
+      <div className="camera-showcase">
+        <div className="camera-showcase__stage">
+          <CameraViewer />
+          <span className="camera-showcase__hint" aria-hidden="true">
+            Drag to rotate · Scroll to zoom
+          </span>
+        </div>
+
+        <aside className="glass panel camera-showcase__spec">
+          <span className="eyebrow">Shot on</span>
+          <h3 className="camera-showcase__body">{CAMERA_SETUP.body}</h3>
+          <p className="camera-showcase__lens">{CAMERA_SETUP.lens}</p>
+
+          <dl className="camera-showcase__meta">
+            <div>
+              <dt>Sensor</dt>
+              <dd>{CAMERA_SETUP.sensor}</dd>
+            </div>
+            <div>
+              <dt>Mount</dt>
+              <dd>{CAMERA_SETUP.mount}</dd>
+            </div>
+          </dl>
+
+          <p className="camera-showcase__notes">{CAMERA_SETUP.notes}</p>
+        </aside>
+      </div>
+
+      {/* ---------- Photo marquees ---------- */}
       <div className="marquees">
         <Marquee photos={rowA} direction="right" onOpen={setOpen} />
         <Marquee photos={rowB} direction="left" onOpen={setOpen} />
       </div>
 
-      {open !== null && (
+      {/* ---------- Lightbox ---------- */}
+      {currentPhoto !== null && open !== null && (
         <div
           className="lightbox"
           role="dialog"
@@ -82,7 +130,12 @@ export function Gallery() {
           aria-label="Photograph viewer"
           onClick={close}
         >
-          <button type="button" className="lightbox__close" onClick={close} aria-label="Close">
+          <button
+            type="button"
+            className="lightbox__close"
+            onClick={close}
+            aria-label="Close"
+          >
             &times;
           </button>
 
@@ -98,15 +151,33 @@ export function Gallery() {
             &#8249;
           </button>
 
-          <figure className="lightbox__figure" onClick={(e) => e.stopPropagation()}>
+          <figure
+            className="lightbox__figure"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Image
-              src={PHOTOS[open].src}
-              alt={PHOTOS[open].alt ?? ""}
+              src={currentPhoto.src}
+              alt={currentPhoto.alt ?? currentPhoto.caption ?? ""}
               fill
               sizes="90vw"
               quality={88}
               priority
             />
+
+            {(currentPhoto.caption || currentPhoto.location) && (
+              <figcaption className="lightbox__caption">
+                {currentPhoto.caption && (
+                  <span className="lightbox__caption-text">
+                    {currentPhoto.caption}
+                  </span>
+                )}
+                {currentPhoto.location && (
+                  <span className="lightbox__caption-loc">
+                    {currentPhoto.location}
+                  </span>
+                )}
+              </figcaption>
+            )}
           </figure>
 
           <button
@@ -139,9 +210,6 @@ function Marquee({
   direction: "left" | "right";
   onOpen: (i: number) => void;
 }) {
-  // The track holds the row twice. Each copy is exactly 50% of the track, so
-  // translating by half its width lands on an identical frame — that's what
-  // makes the loop seamless rather than snapping back.
   const track = [...photos, ...photos];
 
   return (
@@ -164,8 +232,6 @@ function Marquee({
                 tabIndex={isClone ? -1 : undefined}
                 aria-label={`Open photograph ${lightboxIndex + 1} of ${PHOTOS.length}`}
               >
-                {/* Uncropped: the row fixes the height, width follows the
-                    photo's own aspect ratio. */}
                 <Image
                   src={photo.src}
                   alt={photo.alt ?? ""}

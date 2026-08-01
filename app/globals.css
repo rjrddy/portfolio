@@ -971,6 +971,125 @@ button {
 
 /* --- Photography ---------------------------------------------------------- */
 
+/* Camera showcase — 3D viewer + spec panel. Two columns on desktop, stacked
+   on mobile. */
+.camera-showcase {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: var(--s5);
+    margin-bottom: var(--s6);
+    align-items: stretch;
+}
+
+.camera-showcase__stage {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 40%, rgba(89, 255, 185, 0.08), transparent 65%),
+        rgba(8, 9, 11, 0.35);
+    border: 1px solid var(--glass-line);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.camera-viewer {
+    position: absolute;
+    inset: 0;
+    cursor: grab;
+}
+.camera-viewer:active { cursor: grabbing; }
+
+.camera-viewer--loading {
+    /* Show a subtle pulse while three.js loads in. */
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: camera-loading 1.6s ease-in-out infinite;
+}
+
+@keyframes camera-loading {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+.camera-showcase__hint {
+    position: absolute;
+    left: 50%;
+    bottom: var(--s3);
+    transform: translateX(-50%);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-shadow: var(--text-halo);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.75;
+}
+
+.camera-showcase__spec {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+}
+
+.camera-showcase__body {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.15;
+}
+
+.camera-showcase__lens {
+    font-size: 0.9375rem;
+    color: var(--accent);
+    letter-spacing: 0.005em;
+}
+
+.camera-showcase__meta {
+    display: grid;
+    gap: var(--s2);
+    margin-top: var(--s1);
+    padding-top: var(--s3);
+    border-top: 1px solid var(--glass-line);
+}
+
+.camera-showcase__meta > div {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: var(--s2);
+    align-items: baseline;
+}
+
+.camera-showcase__meta dt {
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.camera-showcase__meta dd {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+}
+
+.camera-showcase__notes {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin-top: auto;
+    padding-top: var(--s3);
+    border-top: 1px solid var(--glass-line);
+}
+
 /* Two rows scrolling in opposite directions. The row fixes the height and each
    photo's width follows its own aspect ratio, so nothing is cropped. */
 /* Full-bleed: breaks out of the centred section container so the rows run edge
@@ -1085,6 +1204,38 @@ button {
 
 .lightbox__figure img {
     object-fit: contain;
+}
+
+.lightbox__caption {
+    position: absolute;
+    left: 50%;
+    bottom: var(--s3);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    max-width: min(680px, 90%);
+    padding: 0.6rem 1.1rem;
+    text-align: center;
+    background: rgba(6, 7, 9, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-line);
+    border-radius: 999px;
+}
+
+.lightbox__caption-text {
+    font-size: 0.9375rem;
+    color: var(--ink);
+    letter-spacing: 0.005em;
+}
+
+.lightbox__caption-loc {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
 }
 
 .lightbox__close {
@@ -1443,6 +1594,16 @@ button {
         min-height: 180px;
         border-right: 0;
         border-bottom: 1px solid var(--glass-line);
+    }
+
+    /* Camera stacks: 3D viewer on top, spec panel below. */
+    .camera-showcase {
+        grid-template-columns: 1fr;
+        gap: var(--s4);
+    }
+
+    .camera-showcase__stage {
+        aspect-ratio: 4 / 3;
     }
 }
 

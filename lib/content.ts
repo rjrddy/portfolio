@@ -305,11 +305,33 @@ export const HERO_PHOTO = "/photos/wallpaper.jpg";
 
 /**
  * Photos keep their native aspect ratio — never cropped. `width`/`height` are
- * the file's true pixel dimensions; the gallery derives the ratio from them,
- * so a new photo only needs its real numbers here (`sips -g pixelWidth -g
- * pixelHeight <file>`).
+ * the file's true pixel dimensions; the gallery derives the ratio from them.
+ * `caption` is a short description of the subject; `location` is where it was
+ * shot. Both are optional — omit for photos you'd rather leave untitled.
  */
-export type Photo = { src: string; width: number; height: number; alt?: string };
+export type Photo = {
+  src: string;
+  width: number;
+  height: number;
+  alt?: string;
+  /** What the photograph is of, or the scene. Shown in the lightbox. */
+  caption?: string;
+  /** Where it was shot. Shown next to the caption in the lightbox. */
+  location?: string;
+};
+
+/**
+ * The camera setup used for every photo below — surfaced next to the 3D
+ * viewer in the Photography section. Edit here to swap gear.
+ */
+export const CAMERA_SETUP = {
+  body: "Fujifilm X-T4",
+  lens: "XF 18-55mm f/2.8-4 R LM OIS",
+  sensor: "26.1MP APS-C X-Trans CMOS 4",
+  mount: "Fujifilm X",
+  notes:
+    "Kit lens does more than it's given credit for — sharp wide open, image-stabilized, and the perfect walkaround pairing with the X-T4's dial-first ergonomics.",
+};
 
 export const PHOTOS: Photo[] = [
   { src: "/photos/0520057_0021.JPG", width: 2128, height: 1501 },

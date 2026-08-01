@@ -18,6 +18,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://raj-reddy.com"),
   title: "Raj Reddy — Software Engineer",
   description:
     "Software engineer at L3Harris Technologies working on embedded signal processing and data infrastructure. Also a photographer.",
