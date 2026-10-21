@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 
 import { ProjectVisual } from "./ProjectVisual";
@@ -12,6 +13,10 @@ import type { Project } from "@/lib/content";
  * plus a cursor-tracked accent glow underneath the surface. Transitions are
  * off while the pointer is inside (so tilt tracks fluidly) and re-enabled on
  * leave so the card eases back to rest.
+ *
+ * Links are real buttons in the card footer rather than one card-wide anchor —
+ * a project can offer a demo, a repo and its own page at once, and nesting
+ * those inside a wrapping <a> would be invalid.
  */
 export function ProjectCard({ project }: { project: Project }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -40,8 +45,12 @@ export function ProjectCard({ project }: { project: Project }) {
 
   const onLeave = useCallback(() => setPointer(null), []);
 
-  const primary = project.links[0];
   const tilting = pointer !== null;
+  const page = project.slug ? `/projects/${project.slug}` : null;
+
+  /* A real screenshot gets the full-bleed treatment: media on top, running the
+     width of the card, instead of the 300px thumbnail column. */
+  const shot = Boolean(project.image);
 
   const style: React.CSSProperties = tilting
     ? {
@@ -55,78 +64,103 @@ export function ProjectCard({ project }: { project: Project }) {
         transition: "transform 550ms var(--ease), box-shadow 350ms ease",
       };
 
-  const body = (
-    <article
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      data-tilting={tilting || undefined}
-      className={`glass panel project${
-        project.featured ? " project--featured" : ""
-      }`}
-      style={style}
-    >
-      <span className="project__sheen" aria-hidden="true" />
+  return (
+    <div className="project__wrap">
+      <article
+        ref={ref}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        data-tilting={tilting || undefined}
+        className={[
+          "glass",
+          "panel",
+          "project",
+          shot && "project--shot",
+          project.featured && "project--featured",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={style}
+      >
+        <span className="project__sheen" aria-hidden="true" />
 
-      <div className="project__media">
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt=""
-            fill
-            sizes="(max-width: 800px) 100vw, 50vw"
-            quality={80}
-          />
-        ) : project.visual ? (
-          <ProjectVisual kind={project.visual} />
-        ) : (
-          <div className="project__placeholder" aria-hidden="true">
-            <TechRow items={project.stack.slice(0, 3)} />
-          </div>
-        )}
-        {project.award && (
-          <span className="project__award">{project.award}</span>
-        )}
-        {project.status && (
-          <span
-            className={`project__status project__status--${project.status}`}
-          >
-            {project.status === "in-progress" ? "In Progress" : "Planned"}
-          </span>
-        )}
-      </div>
+        <div className="project__media">
+          {project.image ? (
+            <Image
+              src={project.image}
+              /* A screenshot carries content the card text doesn't; the
+                 placeholder artwork is decoration and stays silent. */
+              alt={shot ? `A screenshot of ${project.title}.` : ""}
+              fill
+              sizes={
+                shot
+                  ? "(max-width: 1200px) 100vw, 1120px"
+                  : "(max-width: 800px) 100vw, 50vw"
+              }
+              quality={80}
+            />
+          ) : project.visual ? (
+            <ProjectVisual kind={project.visual} />
+          ) : (
+            <div className="project__placeholder" aria-hidden="true">
+              <TechRow items={project.stack.slice(0, 3)} />
+            </div>
+          )}
+          {project.award && (
+            <span className="project__award">{project.award}</span>
+          )}
+          {project.status && (
+            <span
+              className={`project__status project__status--${project.status}`}
+            >
+              {project.status === "in-progress" ? "In Progress" : "Planned"}
+            </span>
+          )}
+        </div>
 
-      <div className="project__body">
-        <h3 className="project__title">{project.title}</h3>
-        <p className="project__blurb">{project.blurb}</p>
-        <p className="project__desc">{project.description}</p>
+        <div className="project__body">
+          <h3 className="project__title">
+            {page ? (
+              <Link href={page} className="project__title-link">
+                {project.title}
+              </Link>
+            ) : (
+              project.title
+            )}
+          </h3>
+          <p className="project__blurb">{project.blurb}</p>
+          <p className="project__desc">{project.description}</p>
 
-        <TechRow items={project.stack} />
+          <TechRow items={project.stack} />
 
-        {project.links.length > 0 && (
-          <div className="project__links">
-            {project.links.map((link) => (
-              <span key={link.href} className="project__link">
-                {link.label}
-                <span aria-hidden="true">→</span>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </article>
-  );
-
-  return primary ? (
-    <a
-      href={primary.href}
-      className="project__wrap project__wrap--link"
-      target="_blank"
-      rel="noreferrer"
-    >
-      {body}
-    </a>
-  ) : (
-    <div className="project__wrap">{body}</div>
+          {(project.links.length > 0 || page) && (
+            <div className="project__actions">
+              {project.links.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`btn${link.kind === "demo" ? " btn--accent" : ""}`}
+                >
+                  {link.label}
+                  <span className="btn__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              ))}
+              {page && (
+                <Link href={page} className="btn btn--quiet">
+                  Project details
+                  <span className="btn__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+      </article>
+    </div>
   );
 }

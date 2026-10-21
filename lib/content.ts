@@ -197,6 +197,15 @@ export type ProjectLink = {
   kind?: "repo" | "demo" | "writeup";
 };
 
+/** A screenshot in a project page's tour. */
+export type ProjectShot = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+};
+
 /**
  * Bespoke SVG artwork rendered in the media slot when there's no screenshot.
  * Each key corresponds to a component in components/ProjectVisual.tsx.
@@ -222,9 +231,110 @@ export type Project = {
   status?: "in-progress" | "planned";
   /** Signature visual for the card. Falls back to tech-icon placeholder if unset. */
   visual?: ProjectVisualKind;
+
+  /* --- Optional: gives the project its own page at /projects/<slug> ------ *
+   * The card stays concise either way — everything below only ever renders
+   * on the project page.                                                    */
+
+  /** Set this and the card grows a "Project details" link. */
+  slug?: string;
+  /** One line under the page title, in place of the card's blurb. */
+  tagline?: string;
+  /** Headline numbers, rendered as a strip under the page intro. */
+  stats?: { value: string; label: string }[];
+  /** What the thing actually does. */
+  features?: string[];
+  /** How it works under the hood. */
+  howItWorks?: string[];
+  /** Prose list of everything in the stack, including things without an icon. */
+  builtWith?: string;
+  /** Screenshot tour. */
+  shots?: ProjectShot[];
+  /** Caveat printed alongside the technical notes. */
+  note?: string;
 };
 
 export const PROJECTS: Project[] = [
+  {
+    title: "Jogo Bonito",
+    slug: "jogo-bonito",
+    blurb: "Cross-Era Football Simulator",
+    description:
+      "An interactive football simulator that matches teams from different eras — 2023 Manchester City against 2016 Real Madrid. Explore historical squads, pick starting lineups and tactics, replay simulated matches, and compare outcomes across thousands of simulations.",
+    image: "/assets/works/jogo-bonito.png",
+    stack: ["javascript", "html", "css", "python", "vercel"],
+    links: [
+      {
+        label: "Try the Simulator",
+        href: "https://jogo-bonito-gamma.vercel.app",
+        kind: "demo",
+      },
+      {
+        label: "Source code",
+        href: "https://github.com/rjrddy/jogo_bonito",
+        kind: "repo",
+      },
+    ],
+    featured: true,
+
+    tagline: "Pick two eras. Pick the XI. See how the match might have gone.",
+    stats: [
+      { value: "2,002", label: "Team editions" },
+      { value: "2010–2026", label: "Seasons covered" },
+      { value: "10,000", label: "Matches per experiment" },
+    ],
+    features: [
+      "2,002 team editions spanning 2010–2026 across Europe's top five leagues, the World Cup, Euros, and Copa América.",
+      "Historical player rosters and recorded coach snapshots.",
+      "Custom starting XIs, six formations, five tactical approaches, and home or neutral venues.",
+      "Interactive match replays, shot maps, momentum charts, expected goals, and player reports.",
+      "Scoreline probability grids and experiments of up to 10,000 simulated matches.",
+      "Real club badges, national flags, team-specific chart colours, and system-aware light/dark mode.",
+      "Shareable matchups, locally saved fixtures, and CSV/JSON exports.",
+    ],
+    howItWorks: [
+      "Each team edition carries the scoring and conceding rates it actually recorded that season. A matchup turns those rates into per-side goal expectations, then plays them out as a seeded simulation — the same seed always replays the same match, minute for minute.",
+      "Alongside the replay, a Poisson model turns the same goal expectations into a scoreline probability grid, so a single result can be read against the full distribution it came from. Batch experiments sample that distribution up to 10,000 times to show how often each outcome turns up.",
+      "Python pipelines assemble the squad, coach, and season-results data into static JSON. The front end is plain ES modules with hand-written SVG for every chart — no framework, no runtime dependencies.",
+    ],
+    builtWith:
+      "JavaScript ES modules, HTML, CSS, SVG visualizations, Python data pipelines, and Vercel hosting.",
+    note: "Every result is a hypothetical simulation built from historical rates. Jogo Bonito has no live match feed, makes no calibrated prediction claims, uses no machine-learned modelling, and does not rate individual players — tactical approaches are experimental multipliers, not learned tactics.",
+    shots: [
+      {
+        src: "/assets/works/jogo-bonito-selection.png",
+        width: 2000,
+        height: 1113,
+        alt: "The selection desk with Manchester City 2023 set against Real Madrid 2016.",
+        caption:
+          "The selection desk — competition, edition, formation, approach and venue for each side.",
+      },
+      {
+        src: "/assets/works/jogo-bonito-dashboard.png",
+        width: 2000,
+        height: 1671,
+        alt: "Shot map, match outcome, momentum chart and expected-goals progression for a simulated match.",
+        caption:
+          "Full time: shot map, outcome split, five-minute momentum, and cumulative xG.",
+      },
+      {
+        src: "/assets/works/jogo-bonito-forecast.png",
+        width: 2000,
+        height: 1090,
+        alt: "A scoreline probability grid beside the results of a 1,000-match experiment.",
+        caption:
+          "The forecast lab — the Poisson scoreline grid beside a 1,000-match experiment.",
+      },
+      {
+        src: "/assets/works/jogo-bonito-report.png",
+        width: 2000,
+        height: 1680,
+        alt: "Key moments timeline, per-player ledger, and raw event log for a simulated match.",
+        caption:
+          "The match report — key moments, a per-player ledger, and the raw event log.",
+      },
+    ],
+  },
   {
     title: "Course Planning & Review Platform",
     blurb: "Schedule matching and course insights for students.",
@@ -294,6 +404,15 @@ export const PROJECTS: Project[] = [
     visual: "beacon",
   },
 ];
+
+/** Every project that has earned its own page. */
+export const PROJECT_PAGES = PROJECTS.filter(
+  (p): p is Project & { slug: string } => Boolean(p.slug)
+);
+
+export function projectBySlug(slug: string): Project | undefined {
+  return PROJECTS.find((p) => p.slug === slug);
+}
 
 /* ------------------------------------------------------------------ *
  * Photography — files live in /public/photos/
