@@ -216,7 +216,12 @@ export type ProjectVisualKind =
   | "sphere"
   | "waveform"
   | "network"
-  | "beacon";
+  | "beacon"
+  | "streams"
+  | "pipeline"
+  | "ledger"
+  | "voice"
+  | "gate";
 
 export type Project = {
   title: string;
@@ -229,6 +234,10 @@ export type Project = {
   award?: string;
   /** Undefined = shipped. Anything else surfaces a badge — flip to undefined on ship. */
   status?: "in-progress" | "planned";
+  /** What a saved local run actually measured. Keep it to numbers you can show. */
+  proof?: string;
+  /** What isn't done yet. Printed under the proof so the claim stays honest. */
+  caveat?: string;
   /** Signature visual for the card. Falls back to tech-icon placeholder if unset. */
   visual?: ProjectVisualKind;
 
@@ -334,6 +343,110 @@ export const PROJECTS: Project[] = [
           "The match report — key moments, a per-player ledger, and the raw event log.",
       },
     ],
+  },
+  {
+    title: "Meridian",
+    blurb: "Sensor-stream alignment and deterministic replay",
+    description:
+      "Aligns noisy sensor streams using bounded buffers, timestamp watermarks and scalar Kalman filtering. Durable event storage, deterministic replay, a WebSocket operations console and synthetic instrument monitoring.",
+    image: null,
+    stack: ["cpp", "python", "fastapi", "sqlite", "react"],
+    links: [
+      { label: "Source code", href: "https://github.com/rjrddy/meridian", kind: "repo" },
+    ],
+    proof:
+      "Replayed 900 public sensor records with bit-identical output; browser message-arrival p99 of 6.187 ms. 14 tests pass.",
+    caveat:
+      "Local implementation — deployment and the finished demo recording are still outstanding.",
+    visual: "streams",
+  },
+  {
+    title: "Relay",
+    blurb: "Durable workflow execution",
+    description:
+      "Runs ordered workflows with idempotent admission, worker leases, fencing, retries, dead letters and replay. Internal effects commit atomically with workflow state, and the console drives pause, rollout and recovery.",
+    image: null,
+    stack: ["go", "postgresql", "react", "opentelemetry", "python"],
+    links: [
+      {
+        label: "Demo",
+        href: "https://relay-brown-six.vercel.app",
+        kind: "writeup",
+      },
+      { label: "Source code", href: "https://github.com/rjrddy/relay", kind: "repo" },
+    ],
+    proof:
+      "Reconciled 67,688 workflows and 203,064 internal effects across a one-hour fault campaign — zero lost workflows, zero duplicate effects. 20 tests pass.",
+    caveat:
+      "Local runtime and recorded demo; the full hour-audit export and interactive hosting are unfinished.",
+    visual: "pipeline",
+  },
+  {
+    title: "Tally",
+    blurb: "Auditable ledger and decision platform",
+    description:
+      "A double-entry ledger with exact money arithmetic, transactional idempotency, immutable journal records and balance reconstruction. Adds versioned decision rules, reconciliation review, merchant enrichment and feed-health monitoring over synthetic financial data.",
+    image: null,
+    stack: ["typescript", "nestjs", "postgresql", "react"],
+    links: [
+      {
+        label: "Demo",
+        href: "https://tally-gamma-lac.vercel.app",
+        kind: "writeup",
+      },
+      { label: "Source code", href: "https://github.com/rjrddy/tally", kind: "repo" },
+    ],
+    proof:
+      "Replayed 1,003 journal events to identical balances; decision HTTP p99 of 14.386 ms over 400 requests at concurrency 16. 27 tests pass.",
+    caveat:
+      "Local application and recorded demo; persistent interactive hosting is outstanding.",
+    visual: "ledger",
+  },
+  {
+    title: "Pulse",
+    blurb: "Voice inference gateway with cancellation and recovery",
+    description:
+      "Connects speech recognition, language-model inference and speech synthesis through an authenticated WebSocket gateway — faster-whisper, SmolLM2 and Piper behind bounded admission, circuit breakers, fallback before audio starts, interruption handling, worker recovery and latency instrumentation.",
+    image: null,
+    stack: ["go", "python", "react"],
+    links: [
+      {
+        label: "Demo",
+        href: "https://pulse-delta-ten-68.vercel.app",
+        kind: "writeup",
+      },
+      { label: "Source code", href: "https://github.com/rjrddy/pulse", kind: "repo" },
+    ],
+    proof:
+      "First-audio p99 of 734.14 ms at concurrency 4 on local CPU (8-token output cap, 8 samples), with worker-kill recovery and stale audio rejected after interruption. 17 tests pass.",
+    caveat:
+      "Local CPU inference and recorded demo; continuous microphone capture, hosted inference and GPU measurements are unfinished.",
+    visual: "voice",
+  },
+  {
+    title: "Gatekeeper",
+    blurb: "Release verification and canary rollback",
+    description:
+      "Combines flaky-test detection, CI failure clustering, Terraform-plan risk checks and signed artifact verification, then puts a real HTTP canary proxy in front of the rollout with fenced controls, rollback and crash recovery.",
+    image: null,
+    stack: ["python", "fastapi", "rust", "terraform", "sqlite", "react"],
+    links: [
+      {
+        label: "Demo",
+        href: "https://gatekeeper-ten-sandy.vercel.app",
+        kind: "writeup",
+      },
+      {
+        label: "Source code",
+        href: "https://github.com/rjrddy/gatekeeper",
+        kind: "repo",
+      },
+    ],
+    proof:
+      "Caught 6/6 seeded risky infrastructure plans with zero false positives across 10 fixtures; two HTTP rollbacks, one promotion and controller-restart recovery. 31 tests pass.",
+    caveat:
+      "Local system and recorded demo; GitHub App installation, live JUnit ingestion and persistent hosting are unfinished.",
+    visual: "gate",
   },
   {
     title: "Course Planning & Review Platform",

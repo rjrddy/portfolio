@@ -32,7 +32,12 @@ export function Reveal() {
           }
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+      /* threshold stays 0: a section taller than ~12.5x the viewport can
+         never reach a ratio of 0.08, so any non-zero threshold silently
+         leaves long sections hidden forever (Projects on a phone is well
+         past that). The -10% bottom margin is what actually holds the
+         entrance back until the section is properly on screen. */
+      { rootMargin: "0px 0px -10% 0px", threshold: 0 }
     );
 
     targets.forEach((el) => observer.observe(el));

@@ -19,6 +19,16 @@ export function ProjectVisual({ kind }: { kind: ProjectVisualKind }) {
       return <Network />;
     case "beacon":
       return <Beacon />;
+    case "streams":
+      return <Streams />;
+    case "pipeline":
+      return <Pipeline />;
+    case "ledger":
+      return <Ledger />;
+    case "voice":
+      return <Voice />;
+    case "gate":
+      return <Gate />;
   }
 }
 
@@ -313,6 +323,336 @@ function Beacon() {
         r="14"
         fill="var(--accent)"
         opacity="0.18"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Streams — three sensor tracks whose events line up on a watermark.
+ * ------------------------------------------------------------------ */
+function Streams() {
+  // Each track fires at its own cadence; the watermark is where they agree.
+  const tracks = [
+    { y: 46, events: [22, 40, 61, 83, 104, 126, 150, 172] },
+    { y: 80, events: [28, 47, 66, 90, 112, 126, 144, 166] },
+    { y: 114, events: [18, 36, 58, 78, 99, 126, 152, 178] },
+  ];
+  const watermark = 126;
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {tracks.map((t) => (
+        <g key={t.y}>
+          <line
+            x1="12"
+            y1={t.y}
+            x2="188"
+            y2={t.y}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="1"
+          />
+          {t.events.map((x) => {
+            const aligned = x === watermark;
+            return (
+              <rect
+                key={x}
+                x={x - 1.5}
+                y={t.y - (aligned ? 9 : 5)}
+                width="3"
+                height={aligned ? 18 : 10}
+                rx="1.5"
+                fill={aligned ? "var(--accent)" : "rgba(255,255,255,0.3)"}
+              />
+            );
+          })}
+        </g>
+      ))}
+      {/* The watermark itself — everything to its left is settled. */}
+      <line
+        x1={watermark}
+        y1="28"
+        x2={watermark}
+        y2="132"
+        stroke="var(--accent)"
+        strokeWidth="1"
+        strokeDasharray="3 3"
+        opacity="0.75"
+      />
+      <circle cx={watermark} cy="24" r="3" fill="var(--accent)" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Pipeline — a workflow chain with a retry arc and a dead-letter stub.
+ * ------------------------------------------------------------------ */
+function Pipeline() {
+  const nodes = [34, 76, 118, 160];
+  const y = 72;
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {nodes.slice(0, -1).map((x, i) => (
+        <line
+          key={x}
+          x1={x + 11}
+          y1={y}
+          x2={nodes[i + 1] - 11}
+          y2={y}
+          stroke="rgba(255,255,255,0.22)"
+          strokeWidth="1.2"
+        />
+      ))}
+
+      {nodes.map((x, i) => (
+        <rect
+          key={x}
+          x={x - 11}
+          y={y - 11}
+          width="22"
+          height="22"
+          rx="5"
+          fill={i === 2 ? "var(--accent)" : "rgba(255,255,255,0.14)"}
+          stroke={i === 2 ? "var(--accent)" : "rgba(255,255,255,0.32)"}
+          strokeWidth="1"
+          opacity={i === 2 ? 0.9 : 1}
+        />
+      ))}
+
+      {/* Retry: the third step hands work back to the second. */}
+      <path
+        d="M118 55 C118 32, 76 32, 76 55"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="1.2"
+        opacity="0.65"
+      />
+      <path
+        d="M73 51 l3 5 l3 -5"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        opacity="0.65"
+      />
+
+      {/* Dead letter: what the last step gives up on. */}
+      <line
+        x1="160"
+        y1={y + 13}
+        x2="160"
+        y2="112"
+        stroke="rgba(255,255,255,0.2)"
+        strokeWidth="1.2"
+        strokeDasharray="3 3"
+      />
+      <rect
+        x="149"
+        y="112"
+        width="22"
+        height="16"
+        rx="4"
+        fill="none"
+        stroke="rgba(255,255,255,0.28)"
+        strokeWidth="1"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Ledger — debits and credits mirrored across a centre rule.
+ * ------------------------------------------------------------------ */
+function Ledger() {
+  // Every row balances: the two sides are always the same length.
+  const rows = [34, 58, 70, 46, 62, 28];
+  const mid = 100;
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {rows.map((w, i) => {
+        const y = 28 + i * 18;
+        const accent = i === 2;
+        const fill = accent ? "var(--accent)" : "rgba(255,255,255,0.22)";
+        return (
+          <g key={i} opacity={accent ? 0.9 : 1}>
+            <rect x={mid - 4 - w} y={y} width={w} height="9" rx="2" fill={fill} />
+            <rect x={mid + 4} y={y} width={w} height="9" rx="2" fill={fill} />
+          </g>
+        );
+      })}
+      <line
+        x1={mid}
+        y1="18"
+        x2={mid}
+        y2="142"
+        stroke="rgba(255,255,255,0.4)"
+        strokeWidth="1"
+      />
+      {/* Closing rule: the books tie out. */}
+      <line
+        x1="28"
+        y1="136"
+        x2="172"
+        y2="136"
+        stroke="var(--accent)"
+        strokeWidth="1"
+        opacity="0.5"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Voice — speech in, inference, speech out, cut short by a barge-in.
+ * ------------------------------------------------------------------ */
+function Voice() {
+  const inBars = [14, 26, 40, 22, 34, 18];
+  const outBars = [20, 36, 28, 44, 12, 24];
+  const cut = 162; // where the caller interrupts
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {inBars.map((h, i) => {
+        const x = 16 + i * 9;
+        return (
+          <rect
+            key={`i-${i}`}
+            x={x}
+            y={80 - h / 2}
+            width="4"
+            height={h}
+            rx="2"
+            fill="rgba(255,255,255,0.34)"
+          />
+        );
+      })}
+
+      {/* The model in the middle. */}
+      <line x1="72" y1="80" x2="84" y2="80" stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" />
+      <rect
+        x="84"
+        y="62"
+        width="36"
+        height="36"
+        rx="9"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="1.2"
+        opacity="0.8"
+      />
+      <circle cx="102" cy="80" r="5" fill="var(--accent)" opacity="0.85" />
+      <line x1="120" y1="80" x2="132" y2="80" stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" />
+
+      {outBars.map((h, i) => {
+        const x = 132 + i * 9;
+        // Anything past the barge-in never reaches the speaker.
+        const dropped = x >= cut;
+        return (
+          <rect
+            key={`o-${i}`}
+            x={x}
+            y={80 - (dropped ? 6 : h) / 2}
+            width="4"
+            height={dropped ? 6 : h}
+            rx="2"
+            fill={dropped ? "rgba(255,255,255,0.14)" : "var(--accent)"}
+            opacity={dropped ? 1 : 0.75}
+          />
+        );
+      })}
+
+      <line
+        x1={cut - 4}
+        y1="40"
+        x2={cut - 4}
+        y2="120"
+        stroke="var(--accent)"
+        strokeWidth="1"
+        strokeDasharray="3 3"
+      />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Gate — a release check that splits a thin canary off the main path.
+ * ------------------------------------------------------------------ */
+function Gate() {
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {/* Traffic arriving at the gate. */}
+      <line
+        x1="14"
+        y1="80"
+        x2="78"
+        y2="80"
+        stroke="rgba(255,255,255,0.3)"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+
+      {/* The gate: two posts with a gap only passing builds get through. */}
+      <rect x="84" y="30" width="5" height="34" rx="2" fill="var(--accent)" />
+      <rect x="84" y="96" width="5" height="34" rx="2" fill="var(--accent)" />
+
+      {/* Stable traffic carries straight on. */}
+      <line
+        x1="96"
+        y1="80"
+        x2="178"
+        y2="80"
+        stroke="rgba(255,255,255,0.3)"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+      {/* The canary: a thin slice peeled off and watched. */}
+      <path
+        d="M96 76 C124 76, 134 46, 170 46"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <circle cx="170" cy="46" r="4" fill="var(--accent)" />
+
+      {/* Rollback: the way back if the canary goes bad. */}
+      <path
+        d="M160 116 A26 26 0 1 1 134 90"
+        fill="none"
+        stroke="rgba(255,255,255,0.28)"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeDasharray="3 3"
+      />
+      <path
+        d="M130 86 l4 4 l-4 4"
+        fill="none"
+        stroke="rgba(255,255,255,0.28)"
+        strokeWidth="1.4"
+        strokeLinecap="round"
       />
     </svg>
   );
