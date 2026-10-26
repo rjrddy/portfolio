@@ -228,6 +228,9 @@ export type Project = {
   blurb: string;
   description: string;
   image: string | null;
+  /** Natural pixel size of `image`. Lets the project page reserve the right
+   *  box before the file loads, whatever crop the screenshot happens to be. */
+  imageSize?: { width: number; height: number };
   stack: TechKey[];
   links: ProjectLink[];
   featured?: boolean;
@@ -238,6 +241,13 @@ export type Project = {
   proof?: string;
   /** What isn't done yet. Printed under the proof so the claim stays honest. */
   caveat?: string;
+  /**
+   * A limit on what the project may be used for, not just what's unfinished.
+   * Rendered on the card itself, in its own warning colour — never tucked
+   * away on the project page where someone clicking straight to a demo
+   * would miss it.
+   */
+  disclaimer?: string;
   /** Signature visual for the card. Falls back to tech-icon placeholder if unset. */
   visual?: ProjectVisualKind;
 
@@ -265,12 +275,98 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    title: "Telesense",
+    slug: "telesense",
+    blurb: "Multimodal Behavioral Analysis for Telehealth",
+    description:
+      "Over video, clinicians lose many of the nonverbal cues they rely on — facial expression, tone of voice, pauses, how a patient's affect shifts mid-conversation. Telesense takes a recorded session and returns timestamped flags for moments that may need follow-up, alongside an emotion timeline, protective factors the patient mentioned, and intake topics that were never covered.",
+    image: "/assets/works/telesense.png",
+    imageSize: { width: 2000, height: 716 },
+    stack: ["python", "pytorch", "fastapi", "react", "docker", "vercel"],
+    links: [
+      {
+        label: "Open the demo",
+        href: "https://telesense.vercel.app",
+        kind: "demo",
+      },
+      {
+        label: "Source code",
+        href: "https://github.com/rjrddy/telesense",
+        kind: "repo",
+      },
+    ],
+    featured: true,
+    disclaimer:
+      "Research prototype. It does not diagnose, screen for, or assess risk of any condition, and its output must not be used to make clinical decisions. The public demo runs an uncalibrated pretrained pipeline — not a trained Telesense checkpoint, and not a diagnostic classifier.",
+
+    tagline:
+      "A second observer for recorded sessions — timestamped, auditable, and explicit about what it cannot tell you.",
+    stats: [
+      { value: "3", label: "Modalities fused" },
+      { value: "Per-frame", label: "Concern localization" },
+      { value: "Local-first", label: "Recordings stay on device" },
+    ],
+    features: [
+      "Upload a session and get timestamped flags for moments that may warrant follow-up, scored across audio, video and transcript.",
+      "A synchronized review workspace: video playback, audio waveform, searchable transcript, and per-modality signal timelines that seek to the moment.",
+      "Whisper transcription with model-derived word timestamps, so every passage links back to a point in the recording.",
+      "Protective factors the patient mentioned and intake topics never covered, from transparent phrase-matching rules that send nothing to an external service.",
+      "An emotion timeline and combined flag counts, with the engine that produced them labelled in the interface.",
+      "A trainable multimodal model in the repository: per-modality encoders, cross-modal attention fusion, and a TCN + Transformer temporal encoder scoring every frame.",
+      "A separate unsupervised track — temporal VAE plus contrastive learning — that surfaces unusual moments without any labels.",
+      "JSON export, a sample library open without a key, and a gated upload path against a Fly.io CPU backend.",
+    ],
+    howItWorks: [
+      "A session is uploaded and stored locally. The backend extracts audio with ffmpeg, transcribes it with Whisper, then runs one of two engines. The deployed demo runs the pretrained pipeline: Wav2Vec2 (SUPERB) scores three-second windows of speech for vocal emotion, RoBERTa (GoEmotions) scores transcript passages across 28 labels, and a keyword detector plus temporal smoothing turn those scores into timestamped flags.",
+      "The second engine is the Telesense model itself, which runs when a trained checkpoint is configured. Each modality goes through its own pretrained encoder — Wav2Vec2 for audio, ResNet-50 or DenseNet-121 per frame for video, DistilBERT for text. The features are projected to a shared size and passed through a multi-scale temporal encoder that pairs a TCN with a Transformer, so short patterns like a pause or a shift in tone and longer arcs across the session are both in reach. A localization head then scores every frame, and high-scoring frames merge into segments.",
+      "Localizing in time rather than emitting one label per session is the design decision the rest follows from: a reviewer can jump to the moment and judge it, and frame-level scores are auditable in a way a single verdict is not. Protective factors and missing intake questions stay deliberately rule-based — phrase matching is predictable and inspectable. The backend binds to 127.0.0.1 and keeps uploads, extracted audio and results on the local filesystem.",
+    ],
+    builtWith:
+      "Python, PyTorch, FastAPI and a React + Vite frontend, over Whisper, Wav2Vec2, RoBERTa, DistilBERT and ResNet/DenseNet encoders. Docker for the backend image, Vercel for the demo frontend, Fly.io for the gated CPU backend.",
+    note: "Telesense is a research prototype. It does not diagnose, screen for, or assess risk of any condition, and its output — including flags, protective factors and missing-question prompts — must not be used to make clinical decisions. The public demo runs an uncalibrated pretrained fallback on CPU, not a trained Telesense checkpoint and not a diagnostic classifier; it flags readily and produces both false positives and false negatives. Severity labels are uncalibrated application thresholds, not clinical cut-offs, and a model score is not the probability that someone has a condition. Anyone at risk needs evaluation by a qualified clinician; in an emergency, call local emergency services.",
+    shots: [
+      {
+        src: "/assets/works/telesense-library.png",
+        width: 2000,
+        height: 1833,
+        alt: "The sample library listing three recorded excerpts with saved analysis, above the recording-to-review pipeline diagram.",
+        caption:
+          "The sample library — recorded excerpts with saved analysis, open without a key.",
+      },
+      {
+        src: "/assets/works/telesense-review.png",
+        width: 2000,
+        height: 1250,
+        alt: "The review workspace: video playback, audio waveform, and a searchable timestamped transcript beside signal tabs.",
+        caption:
+          "The review workspace — playback, waveform and transcript stay in sync; click a passage to jump to that moment.",
+      },
+      {
+        src: "/assets/works/telesense-signals.png",
+        width: 2000,
+        height: 641,
+        alt: "Signal timeline with separate vocal, language and visual tracks shaded by intensity.",
+        caption:
+          "Per-modality signal timelines, graded subtle to strong, each one seekable.",
+      },
+      {
+        src: "/assets/works/telesense-models.png",
+        width: 2000,
+        height: 1250,
+        alt: "The models and context page documenting each pretrained model, its training background, and what to watch for.",
+        caption:
+          "Models & context — every model documented with its training background and failure modes.",
+      },
+    ],
+  },
+  {
     title: "Jogo Bonito",
     slug: "jogo-bonito",
     blurb: "Cross-Era Football Simulator",
     description:
       "An interactive football simulator that matches teams from different eras — 2023 Manchester City against 2016 Real Madrid. Explore historical squads, pick starting lineups and tactics, replay simulated matches, and compare outcomes across thousands of simulations.",
     image: "/assets/works/jogo-bonito.png",
+    imageSize: { width: 2000, height: 764 },
     stack: ["javascript", "html", "css", "python", "vercel"],
     links: [
       {
@@ -485,36 +581,6 @@ export const PROJECTS: Project[] = [
       },
     ],
     visual: "sphere",
-  },
-  {
-    title: "Sonar",
-    blurb: "A DSP playground for the browser.",
-    description:
-      "Real-time signal-processing sandbox — WebAssembly-backed FFT and filter kernels, live spectrograms, and MIDI-controlled effects. A visual, tinker-friendly lens on the signal-processing work I do day to day.",
-    image: null,
-    stack: ["typescript", "react", "webgl", "cpp"],
-    links: [],
-    visual: "waveform",
-  },
-  {
-    title: "Photon",
-    blurb: "Sharded computer-vision inference across edge devices.",
-    description:
-      "A Kubernetes-orchestrated inference service that shards vision models across a fleet of low-power nodes. Adaptive batching, graceful degradation, and cold-start warm-up — the operational hard parts of running ML outside a datacenter.",
-    image: null,
-    stack: ["python", "pytorch", "kubernetes", "docker", "raspberrypi"],
-    links: [],
-    visual: "network",
-  },
-  {
-    title: "Beacon",
-    blurb: "A private research assistant powered by local LLMs.",
-    description:
-      "Retrieval-augmented generation over personal notes, papers, and code, powered by open-weight models running locally. Vector search in Postgres via pgvector, a tool-using agent loop, and a chat UI — an assistant that never leaves your machine.",
-    image: null,
-    stack: ["python", "pytorch", "nextjs", "typescript", "postgresql"],
-    links: [],
-    visual: "beacon",
   },
 ];
 

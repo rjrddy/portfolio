@@ -141,6 +141,13 @@ export function ProjectCard({ project }: { project: Project }) {
             </div>
           )}
 
+          {project.disclaimer && (
+            <div className="project__disclaimer">
+              <span className="eyebrow">Research prototype</span>
+              <p>{project.disclaimer}</p>
+            </div>
+          )}
+
           <TechRow items={project.stack} />
 
           {(project.links.length > 0 || page) && (

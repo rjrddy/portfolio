@@ -100,9 +100,9 @@ export default async function ProjectPage({ params }: Params) {
             <figure className="glass work__hero reveal page-reveal" style={delay(0)}>
               <Image
                 src={project.image}
-                alt={`${project.title} at full time.`}
-                width={2000}
-                height={764}
+                alt={`A screenshot of ${project.title}.`}
+                width={project.imageSize?.width ?? 2000}
+                height={project.imageSize?.height ?? 764}
                 sizes="(max-width: 1200px) 100vw, 1120px"
                 quality={88}
                 priority
