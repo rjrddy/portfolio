@@ -796,10 +796,8 @@ button {
 }
 
 .project--shot .project__media {
-    /* One band for every screenshot card so the list reads evenly. Sits
-       between the shipped crops (2.62 and 2.79), which costs each about 3%
-       to `cover` — margin, not content. */
-    aspect-ratio: 27 / 10;
+    /* Matches the shipped crop (2000×764) so nothing is cut on wide screens. */
+    aspect-ratio: 2000 / 764;
     min-height: 0;
     border-right: 0;
     border-bottom: 1px solid var(--glass-line);

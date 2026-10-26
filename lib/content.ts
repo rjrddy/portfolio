@@ -221,7 +221,8 @@ export type ProjectVisualKind =
   | "pipeline"
   | "ledger"
   | "voice"
-  | "gate";
+  | "gate"
+  | "signals";
 
 export type Project = {
   title: string;
@@ -280,8 +281,7 @@ export const PROJECTS: Project[] = [
     blurb: "Multimodal Behavioral Analysis for Telehealth",
     description:
       "Over video, clinicians lose many of the nonverbal cues they rely on — facial expression, tone of voice, pauses, how a patient's affect shifts mid-conversation. Telesense takes a recorded session and returns timestamped flags for moments that may need follow-up, alongside an emotion timeline, protective factors the patient mentioned, and intake topics that were never covered.",
-    image: "/assets/works/telesense.png",
-    imageSize: { width: 2000, height: 716 },
+    image: null,
     stack: ["python", "pytorch", "fastapi", "react", "docker", "vercel"],
     links: [
       {
@@ -323,41 +323,8 @@ export const PROJECTS: Project[] = [
     ],
     builtWith:
       "Python, PyTorch, FastAPI and a React + Vite frontend, over Whisper, Wav2Vec2, RoBERTa, DistilBERT and ResNet/DenseNet encoders. Docker for the backend image, Vercel for the demo frontend, Fly.io for the gated CPU backend.",
+    visual: "signals",
     note: "Telesense is a research prototype. It does not diagnose, screen for, or assess risk of any condition, and its output — including flags, protective factors and missing-question prompts — must not be used to make clinical decisions. The public demo runs an uncalibrated pretrained fallback on CPU, not a trained Telesense checkpoint and not a diagnostic classifier; it flags readily and produces both false positives and false negatives. Severity labels are uncalibrated application thresholds, not clinical cut-offs, and a model score is not the probability that someone has a condition. Anyone at risk needs evaluation by a qualified clinician; in an emergency, call local emergency services.",
-    shots: [
-      {
-        src: "/assets/works/telesense-library.png",
-        width: 2000,
-        height: 1833,
-        alt: "The sample library listing three recorded excerpts with saved analysis, above the recording-to-review pipeline diagram.",
-        caption:
-          "The sample library — recorded excerpts with saved analysis, open without a key.",
-      },
-      {
-        src: "/assets/works/telesense-review.png",
-        width: 2000,
-        height: 1250,
-        alt: "The review workspace: video playback, audio waveform, and a searchable timestamped transcript beside signal tabs.",
-        caption:
-          "The review workspace — playback, waveform and transcript stay in sync; click a passage to jump to that moment.",
-      },
-      {
-        src: "/assets/works/telesense-signals.png",
-        width: 2000,
-        height: 641,
-        alt: "Signal timeline with separate vocal, language and visual tracks shaded by intensity.",
-        caption:
-          "Per-modality signal timelines, graded subtle to strong, each one seekable.",
-      },
-      {
-        src: "/assets/works/telesense-models.png",
-        width: 2000,
-        height: 1250,
-        alt: "The models and context page documenting each pretrained model, its training background, and what to watch for.",
-        caption:
-          "Models & context — every model documented with its training background and failure modes.",
-      },
-    ],
   },
   {
     title: "Jogo Bonito",

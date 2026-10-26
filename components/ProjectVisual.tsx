@@ -29,6 +29,8 @@ export function ProjectVisual({ kind }: { kind: ProjectVisualKind }) {
       return <Voice />;
     case "gate":
       return <Gate />;
+    case "signals":
+      return <Signals />;
   }
 }
 
@@ -654,6 +656,73 @@ function Gate() {
         strokeWidth="1.4"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Signals — three modality lanes graded by intensity, with the flagged
+ * moment lining up across all of them under a playhead.
+ * ------------------------------------------------------------------ */
+function Signals() {
+  // Each lane is one modality; each number is a segment's intensity 0-3,
+  // where 3 is the flagged moment the three lanes agree on.
+  const lanes = [
+    [1, 1, 2, 1, 3, 2, 1, 1],
+    [1, 2, 1, 2, 3, 1, 2, 1],
+    [0, 1, 1, 1, 3, 1, 1, 0],
+  ];
+  const x0 = 26;
+  const segW = 19;
+  const gap = 2;
+  const playhead = x0 + 4 * segW + segW / 2;
+
+  const shade = (v: number) =>
+    v === 3 ? "var(--accent)" : `rgba(255,255,255,${0.08 + v * 0.1})`;
+
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {lanes.map((lane, i) => {
+        const y = 54 + i * 26;
+        return (
+          <g key={i}>
+            {/* Lane label dot — audio, language, vision. */}
+            <circle cx="16" cy={y + 6} r="2.5" fill="rgba(255,255,255,0.28)" />
+            {lane.map((v, j) => (
+              <rect
+                key={j}
+                x={x0 + j * segW}
+                y={y}
+                width={segW - gap}
+                height="12"
+                rx="2.5"
+                fill={shade(v)}
+                opacity={v === 3 ? 0.9 : 1}
+              />
+            ))}
+          </g>
+        );
+      })}
+
+      {/* The playhead, and the flag it has been dragged to. */}
+      <line
+        x1={playhead}
+        y1="36"
+        x2={playhead}
+        y2="124"
+        stroke="var(--accent)"
+        strokeWidth="1.2"
+      />
+      <path
+        d={`M${playhead - 5} 30 l10 0 l-5 7 z`}
+        fill="var(--accent)"
+      />
+      <circle cx={playhead} cy="130" r="2.5" fill="var(--accent)" />
     </svg>
   );
 }
