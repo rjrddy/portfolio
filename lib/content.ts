@@ -222,7 +222,8 @@ export type ProjectVisualKind =
   | "ledger"
   | "voice"
   | "gate"
-  | "signals";
+  | "signals"
+  | "pitch";
 
 export type Project = {
   title: string;
@@ -332,8 +333,7 @@ export const PROJECTS: Project[] = [
     blurb: "Cross-Era Football Simulator",
     description:
       "An interactive football simulator that matches teams from different eras — 2023 Manchester City against 2016 Real Madrid. Explore historical squads, pick starting lineups and tactics, replay simulated matches, and compare outcomes across thousands of simulations.",
-    image: "/assets/works/jogo-bonito.png",
-    imageSize: { width: 2000, height: 764 },
+    image: null,
     stack: ["javascript", "html", "css", "python", "vercel"],
     links: [
       {
@@ -371,41 +371,8 @@ export const PROJECTS: Project[] = [
     ],
     builtWith:
       "JavaScript ES modules, HTML, CSS, SVG visualizations, Python data pipelines, and Vercel hosting.",
+    visual: "pitch",
     note: "Every result is a hypothetical simulation built from historical rates. Jogo Bonito has no live match feed, makes no calibrated prediction claims, uses no machine-learned modelling, and does not rate individual players — tactical approaches are experimental multipliers, not learned tactics.",
-    shots: [
-      {
-        src: "/assets/works/jogo-bonito-selection.png",
-        width: 2000,
-        height: 1113,
-        alt: "The selection desk with Manchester City 2023 set against Real Madrid 2016.",
-        caption:
-          "The selection desk — competition, edition, formation, approach and venue for each side.",
-      },
-      {
-        src: "/assets/works/jogo-bonito-dashboard.png",
-        width: 2000,
-        height: 1671,
-        alt: "Shot map, match outcome, momentum chart and expected-goals progression for a simulated match.",
-        caption:
-          "Full time: shot map, outcome split, five-minute momentum, and cumulative xG.",
-      },
-      {
-        src: "/assets/works/jogo-bonito-forecast.png",
-        width: 2000,
-        height: 1090,
-        alt: "A scoreline probability grid beside the results of a 1,000-match experiment.",
-        caption:
-          "The forecast lab — the Poisson scoreline grid beside a 1,000-match experiment.",
-      },
-      {
-        src: "/assets/works/jogo-bonito-report.png",
-        width: 2000,
-        height: 1680,
-        alt: "Key moments timeline, per-player ledger, and raw event log for a simulated match.",
-        caption:
-          "The match report — key moments, a per-player ledger, and the raw event log.",
-      },
-    ],
   },
   {
     title: "Meridian",

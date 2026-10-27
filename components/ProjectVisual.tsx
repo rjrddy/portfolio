@@ -31,6 +31,8 @@ export function ProjectVisual({ kind }: { kind: ProjectVisualKind }) {
       return <Gate />;
     case "signals":
       return <Signals />;
+    case "pitch":
+      return <Pitch />;
   }
 }
 
@@ -723,6 +725,67 @@ function Signals() {
         fill="var(--accent)"
       />
       <circle cx={playhead} cy="130" r="2.5" fill="var(--accent)" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Pitch — a shot map: two sides attacking opposite ends, one goal.
+ * ------------------------------------------------------------------ */
+function Pitch() {
+  // x, y, radius (bigger = higher xG), and whether it found the net.
+  const shots = [
+    { x: 56, y: 62, r: 3, goal: false },
+    { x: 48, y: 78, r: 4.5, goal: false },
+    { x: 62, y: 86, r: 3.5, goal: false },
+    { x: 52, y: 98, r: 3, goal: false },
+    { x: 68, y: 70, r: 2.5, goal: false },
+    { x: 44, y: 88, r: 5, goal: true },
+    { x: 144, y: 58, r: 3, goal: false },
+    { x: 150, y: 74, r: 4, goal: false },
+    { x: 136, y: 84, r: 3, goal: false },
+    { x: 152, y: 96, r: 4.5, goal: false },
+    { x: 130, y: 66, r: 2.5, goal: false },
+  ];
+  const line = "rgba(255,255,255,0.22)";
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {/* The pitch: touchlines, halfway, centre circle, both boxes. */}
+      <rect
+        x="16"
+        y="30"
+        width="168"
+        height="100"
+        rx="3"
+        fill="rgba(255,255,255,0.03)"
+        stroke={line}
+        strokeWidth="1"
+      />
+      <line x1="100" y1="30" x2="100" y2="130" stroke={line} strokeWidth="1" />
+      <circle cx="100" cy="80" r="16" fill="none" stroke={line} strokeWidth="1" />
+      <circle cx="100" cy="80" r="1.6" fill={line} />
+      <rect x="16" y="56" width="26" height="48" fill="none" stroke={line} strokeWidth="1" />
+      <rect x="158" y="56" width="26" height="48" fill="none" stroke={line} strokeWidth="1" />
+      <rect x="16" y="70" width="9" height="20" fill="none" stroke={line} strokeWidth="1" />
+      <rect x="175" y="70" width="9" height="20" fill="none" stroke={line} strokeWidth="1" />
+
+      {shots.map((s, i) => (
+        <circle
+          key={i}
+          cx={s.x}
+          cy={s.y}
+          r={s.r}
+          fill={s.goal ? "var(--accent)" : "rgba(255,255,255,0.3)"}
+          stroke={s.goal ? "var(--accent)" : "rgba(255,255,255,0.45)"}
+          strokeWidth="0.8"
+          opacity={s.goal ? 0.95 : 1}
+        />
+      ))}
     </svg>
   );
 }
