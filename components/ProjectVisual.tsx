@@ -797,13 +797,17 @@ function Pitch() {
  * model score. Labels sit dead centre in their circle.
  * ------------------------------------------------------------------ */
 function Venn() {
-  const r = 34;
-  // Centres are far enough apart (40 and 41 units) that three 13px labels
-  // placed at them never collide, so each score can sit at its own middle.
+  /* Geometry is driven by the labels, not the other way round. A "NN%" at
+     13px is ~26 units wide, so the centres sit ~52 apart (equilateral) and
+     the radius stays under half that gap: each label then clears both the
+     lens its circles share and the other two labels, while the circles
+     still overlap enough to read as a Venn — including in the middle,
+     where all three meet. */
+  const r = 32;
   const lobes = [
-    { cx: 80, cy: 64, label: "83%", accent: false },
-    { cx: 120, cy: 64, label: "71%", accent: false },
-    { cx: 100, cy: 100, label: "64%", accent: true },
+    { cx: 74, cy: 60, label: "83%", accent: false },
+    { cx: 126, cy: 60, label: "71%", accent: false },
+    { cx: 100, cy: 104, label: "64%", accent: true },
   ];
   return (
     <svg
