@@ -325,7 +325,7 @@ export const PROJECTS: Project[] = [
     ],
     builtWith:
       "Python, PyTorch, FastAPI and a React + Vite frontend, over Whisper, Wav2Vec2, RoBERTa, DistilBERT and ResNet/DenseNet encoders. Docker for the backend image, Vercel for the demo frontend, Fly.io for the gated CPU backend.",
-    visual: "signals",
+    visual: "venn",
     note: "Telesense is a research prototype. It does not diagnose, screen for, or assess risk of any condition, and its output — including flags, protective factors and missing-question prompts — must not be used to make clinical decisions. The public demo runs an uncalibrated pretrained fallback on CPU, not a trained Telesense checkpoint and not a diagnostic classifier; it flags readily and produces both false positives and false negatives. Severity labels are uncalibrated application thresholds, not clinical cut-offs, and a model score is not the probability that someone has a condition. Anyone at risk needs evaluation by a qualified clinician; in an emergency, call local emergency services.",
   },
   {
@@ -372,7 +372,7 @@ export const PROJECTS: Project[] = [
     ],
     builtWith:
       "JavaScript ES modules, HTML, CSS, SVG visualizations, Python data pipelines, and Vercel hosting.",
-    visual: "venn",
+    visual: "pitch",
     note: "Every result is a hypothetical simulation built from historical rates. Jogo Bonito has no live match feed, makes no calibrated prediction claims, uses no machine-learned modelling, and does not rate individual players — tactical approaches are experimental multipliers, not learned tactics.",
   },
   {

@@ -793,15 +793,17 @@ function Pitch() {
 }
 
 /* ------------------------------------------------------------------ *
- * Venn — three overlapping outcome lobes, each carrying its share.
- * Numbers are the simulator's own home/draw/away split.
+ * Venn — the three modalities overlapping, each lobe carrying its own
+ * model score. Labels sit dead centre in their circle.
  * ------------------------------------------------------------------ */
 function Venn() {
   const r = 34;
+  // Centres are far enough apart (40 and 41 units) that three 13px labels
+  // placed at them never collide, so each score can sit at its own middle.
   const lobes = [
-    { cx: 80, cy: 66, label: "32%", lx: 58, ly: 50, accent: false },
-    { cx: 120, cy: 66, label: "24%", lx: 142, ly: 50, accent: false },
-    { cx: 100, cy: 102, label: "45%", lx: 100, ly: 128, accent: true },
+    { cx: 80, cy: 64, label: "83%", accent: false },
+    { cx: 120, cy: 64, label: "71%", accent: false },
+    { cx: 100, cy: 100, label: "64%", accent: true },
   ];
   return (
     <svg
@@ -835,10 +837,10 @@ function Venn() {
       {lobes.map((l, i) => (
         <text
           key={`t-${i}`}
-          x={l.lx}
-          y={l.ly}
+          x={l.cx}
+          y={l.cy}
           textAnchor="middle"
-          dominantBaseline="middle"
+          dominantBaseline="central"
           fontSize="13"
           fontWeight="600"
           fill={l.accent ? "var(--accent)" : "rgba(255,255,255,0.85)"}
