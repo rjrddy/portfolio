@@ -223,7 +223,8 @@ export type ProjectVisualKind =
   | "voice"
   | "gate"
   | "signals"
-  | "pitch";
+  | "pitch"
+  | "venn";
 
 export type Project = {
   title: string;
@@ -371,7 +372,7 @@ export const PROJECTS: Project[] = [
     ],
     builtWith:
       "JavaScript ES modules, HTML, CSS, SVG visualizations, Python data pipelines, and Vercel hosting.",
-    visual: "pitch",
+    visual: "venn",
     note: "Every result is a hypothetical simulation built from historical rates. Jogo Bonito has no live match feed, makes no calibrated prediction claims, uses no machine-learned modelling, and does not rate individual players — tactical approaches are experimental multipliers, not learned tactics.",
   },
   {

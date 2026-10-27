@@ -33,6 +33,8 @@ export function ProjectVisual({ kind }: { kind: ProjectVisualKind }) {
       return <Signals />;
     case "pitch":
       return <Pitch />;
+    case "venn":
+      return <Venn />;
   }
 }
 
@@ -785,6 +787,65 @@ function Pitch() {
           strokeWidth="0.8"
           opacity={s.goal ? 0.95 : 1}
         />
+      ))}
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Venn — three overlapping outcome lobes, each carrying its share.
+ * Numbers are the simulator's own home/draw/away split.
+ * ------------------------------------------------------------------ */
+function Venn() {
+  const r = 34;
+  const lobes = [
+    { cx: 80, cy: 66, label: "32%", lx: 58, ly: 50, accent: false },
+    { cx: 120, cy: 66, label: "24%", lx: 142, ly: 50, accent: false },
+    { cx: 100, cy: 102, label: "45%", lx: 100, ly: 128, accent: true },
+  ];
+  return (
+    <svg
+      className="project-art"
+      viewBox="0 0 200 160"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {/* Fills first, translucent, so the intersections read brighter. */}
+      {lobes.map((l, i) => (
+        <circle
+          key={`f-${i}`}
+          cx={l.cx}
+          cy={l.cy}
+          r={r}
+          fill={l.accent ? "var(--accent)" : "rgba(255,255,255,0.9)"}
+          fillOpacity={l.accent ? 0.16 : 0.08}
+        />
+      ))}
+      {lobes.map((l, i) => (
+        <circle
+          key={`s-${i}`}
+          cx={l.cx}
+          cy={l.cy}
+          r={r}
+          fill="none"
+          stroke={l.accent ? "var(--accent)" : "rgba(255,255,255,0.45)"}
+          strokeWidth="1.2"
+        />
+      ))}
+      {lobes.map((l, i) => (
+        <text
+          key={`t-${i}`}
+          x={l.lx}
+          y={l.ly}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize="13"
+          fontWeight="600"
+          fill={l.accent ? "var(--accent)" : "rgba(255,255,255,0.85)"}
+          style={{ fontFamily: "inherit" }}
+        >
+          {l.label}
+        </text>
       ))}
     </svg>
   );
