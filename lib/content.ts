@@ -492,16 +492,6 @@ export const PROJECTS: Project[] = [
     visual: "schedule",
   },
   {
-    title: "Accountability Tracker",
-    blurb: "Daily goals and recurring tasks, with people to answer to.",
-    description:
-      "Full-stack app for managing daily goals and recurring tasks. Firebase Auth with localStorage guest support, and PostgreSQL via Prisma for persistence. Includes progress visualizations and social features.",
-    image: null,
-    stack: ["nextjs", "typescript", "firebase", "postgresql", "prisma"],
-    links: [],
-    visual: "checklist",
-  },
-  {
     title: "Ray Tracing Engine",
     blurb: "Real-time reflections and lighting in the browser.",
     description:
