@@ -51,7 +51,7 @@ export const EXPERIENCE: Job[] = [
   {
     company: "L3Harris Technologies",
     role: "Associate Software Engineer",
-    location: "Dallas, TX",
+    location: "New York, NY",
     dates: "Jun 2025 — Present",
     bullets: [
       "Developed signal processing modules in Python and C++ on embedded systems, collaborating with hardware teams to optimize performance and resource utilization.",
